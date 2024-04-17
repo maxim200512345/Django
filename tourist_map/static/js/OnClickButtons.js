@@ -9,17 +9,10 @@ function init(){
     const layer = new ymaps3.YMapDefaultSchemeLayer();
     map.addChild(layer);
     const controls = new ymaps3.YMapControls({position: 'top left'});
-    const button = new ymaps3.YMapControlButton({
-        text: 'Москва',
-        onClick: () =>
-        {
-        document.querySelector('#selector').addEventListener("change", () => {
-            console.log(this);
+
+    document.querySelector('#selector').addEventListener("change", () => {
+            console.log(this.value);
         })
-        }
-    });
-    controls.addChild(button);
-    map.addChild(controls);
 }
 
 
