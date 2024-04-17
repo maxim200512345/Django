@@ -13,8 +13,9 @@ function init(){
         text: 'Москва',
         onClick: () =>
         {
-
-
+        document.querySelector('#selector').addEventListener("change", () => {
+            console.log(this);
+        })
         }
     });
     controls.addChild(button);
