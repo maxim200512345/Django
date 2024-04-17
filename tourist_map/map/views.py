@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .queryesToSql import GetItemsFilteredByBudget
+
+from .models import TouristObject
+from .queryesToSql import GetAllDataFromObject
 def mainPage(request):
-    return render(request, "index.html")
+    data = TouristObject.objects.all()
+    return render(request, "index.html", {"TouristObject" : data})
 
 

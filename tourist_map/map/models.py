@@ -3,6 +3,8 @@ from django.db import models
 class TouristObject(models.Model):
     headline = models.CharField(max_length=20)
     description = models.TextField()
+    xCoords = models.TextField()
+    yCoords = models.TextField()
     difficult = models.IntegerField()
     is_for_kids = models.BooleanField()
     approximate_budget = models.IntegerField()

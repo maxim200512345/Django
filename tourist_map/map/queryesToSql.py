@@ -2,7 +2,7 @@ from .models import TouristObject
 
 def GetAllDataFromObject():
     item = TouristObject.objects.all()
-    print(item.query)
+    return item
 def GetItemsFilteredByBudget(Approx_budget_left, Approx_budget_right):
     items = TouristObject.objects.filter(approximate_budget__range=(Approx_budget_left, Approx_budget_right))
     return list(items)
