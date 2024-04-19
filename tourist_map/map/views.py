@@ -5,6 +5,13 @@ from .models import TouristObject
 from .queryesToSql import GetAllDataFromObject
 def mainPage(request):
     data = TouristObject.objects.all()
-    return render(request, "index.html", {"TouristObject" : data})
+    from django.core import serializers
+    data = serializers.serialize("python", TouristObject.objects.all())
+
+    context = {
+        'data':data,
+    }
+
+    return render(request, "index.html", context)
 
 
