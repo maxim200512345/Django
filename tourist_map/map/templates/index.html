@@ -111,6 +111,85 @@
 
 	  window.categoryChanged = function (theSelect){
 
+		  var selectedValue = theSelect.options[theSelect.selectedIndex].value;
+		  if (selectedValue == '0') {
+			  map.geoObjects.removeAll()
+			  data = [
+				{% for item in walk  %}
+				  "{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
+			  	{% endfor %}
+			  ];
+			  data.forEach(item => {
+				  var divided = item.split('+')
+				  var name = divided[0]
+				  var description = divided[1]
+				  var x = parseFloat(divided[2])
+				  var y = parseFloat(divided[3])
+				  var placemark = new ymaps.Placemark([x,y], {
+					  balloonContentHeader: name,
+					  balloonContentBody: description,
+					  balloonContentFooter: 'Подвал'
+				  }, {
+					  iconLayout: 'default#image',
+					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
+					  iconImageSize: [100, 100],
+					  iconImageOffset: [-19,-44]
+				  });
+				  map.geoObjects.add(placemark);
+			  })
+		  }
+		  else if (selectedValue == '1'){
+				map.geoObjects.removeAll()
+			  	data = [
+					{% for item in car  %}
+					  "{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
+					{% endfor %}
+				  ];
+				data.forEach(item => {
+				  var divided = item.split('+')
+				  var name = divided[0]
+				  var description = divided[1]
+				  var x = parseFloat(divided[2])
+				  var y = parseFloat(divided[3])
+				  var placemark = new ymaps.Placemark([x,y], {
+					  balloonContentHeader: name,
+					  balloonContentBody: description,
+					  balloonContentFooter: 'Подвал'
+				  }, {
+					  iconLayout: 'default#image',
+					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
+					  iconImageSize: [100, 100],
+					  iconImageOffset: [-19,-44]
+				  });
+				  map.geoObjects.add(placemark);
+			  })
+		  }
+		  else{
+				map.geoObjects.removeAll()
+			  	data = [
+					{% for item in publicT  %}
+					  "{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
+					{% endfor %}
+				  ];
+				data.forEach(item => {
+				  var divided = item.split('+')
+				  var name = divided[0]
+				  var description = divided[1]
+				  var x = parseFloat(divided[2])
+				  var y = parseFloat(divided[3])
+				  var placemark = new ymaps.Placemark([x,y], {
+					  balloonContentHeader: name,
+					  balloonContentBody: description,
+					  balloonContentFooter: 'Подвал'
+				  }, {
+					  iconLayout: 'default#image',
+					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
+					  iconImageSize: [100, 100],
+					  iconImageOffset: [-19,-44]
+				  });
+				  map.geoObjects.add(placemark);
+			  })
+		  }
 	  }
     }
     ymaps.ready(init);
@@ -191,9 +270,9 @@
 					</button>-->
 					<select id="button-category" class="button-category" onkeyup="this.onchange()" onchange="categoryChanged(this)">
 						<option selected disabled="true">Категория Маршрута</option>
-						<option value="0">На Автомобиле</option>
-						<option value="1">Пеший</option>
-						<option value="2">На Общественном транспорте</option>
+						<option value="2">На Автомобиле</option>
+						<option value="0">Пеший</option>
+						<option value="1">На Общественном транспорте</option>
 					</select>
 
 					<select id="city_selector" class="button-city"  onkeyup="this.onchange()" onchange="cityChanged(this);">
