@@ -5,6 +5,7 @@ class TouristObject(models.Model):
     description = models.TextField()
     xCoords = models.TextField()
     yCoords = models.TextField()
+    location = models.TextField()
     difficult = models.IntegerField()
     is_for_kids = models.BooleanField()
     approximate_budget = models.IntegerField()
