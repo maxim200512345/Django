@@ -31,16 +31,20 @@
 	  map.controls.remove('fullscreenControl'); // удаляем кнопку перехода в полноэкранный режим
 	  map.controls.remove('zoomControl'); // удаляем контрол зуммирования
 	  map.controls.remove('rulerControl'); // удаляем контрол правил
+
+		var link = "";
       window.selectChanged = function(theSelect) {
 		  map.geoObjects.removeAll()
       	var selectedValue = theSelect.options[theSelect.selectedIndex].value.split('+');
-      	var x = parseFloat(selectedValue[2]);
-      	var y = parseFloat(selectedValue[3]);
+		  link = selectedValue[0]
+      	var x = parseFloat(selectedValue[3]);
+      	var y = parseFloat(selectedValue[4]);
+
 		map.setCenter([x,y]);
 		//сюда любой html, css код сувать можно, работа фронта,
 		var placemark = new ymaps.Placemark([x,y], {
-			balloonContentHeader: selectedValue[1],
-			balloonContentBody: selectedValue[0],
+			balloonContentHeader: selectedValue[2],
+			balloonContentBody: selectedValue[1],
 			balloonContentFooter : 'Подвал',
 		}, {
 			iconLayout: 'default#image',
@@ -49,28 +53,30 @@
 			iconImageOffset: [-19, -44]
 		});
 		map.geoObjects.add(placemark);
+		document.getElementById('button-build').setAttribute("href", link)
       };
 
 	  window.cityChanged = function (theSelect, context){
+		  document.getElementById('button-build').setAttribute("href", "")
 		  map.geoObjects.removeAll()
 		  var selectedValue = theSelect.options[theSelect.selectedIndex].value;
 		  if (selectedValue == '0')
 		  {
 			  var data = [
 				{% for item in ekb  %}
-				  "{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
+				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
 			  	{% endfor %}
 			  ];
 			  data.forEach(item => {
 				  var divided = item.split('+')
-				  var name = divided[0]
-				  var description = divided[1]
-				  var x = parseFloat(divided[2])
-				  var y = parseFloat(divided[3])
+				  var name = divided[1]
+				  var description = divided[2]
+				  var x = parseFloat(divided[3])
+				  var y = parseFloat(divided[4])
 				  var placemark = new ymaps.Placemark([x,y], {
 					  balloonContentHeader: name,
 					  balloonContentBody: description,
-					  balloonContentFooter: 'Подвал'
+					  balloonContentFooter: divided[0]
 				  }, {
 					  iconLayout: 'default#image',
 					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
@@ -78,6 +84,11 @@
 					  iconImageOffset: [-19,-44]
 				  });
 				  map.geoObjects.add(placemark);
+				  map.geoObjects.events.add('click', function (e){
+					  var target = e.get('target');
+					  link = target.properties.get('balloonContentFooter')
+					  document.getElementById('button-build').setAttribute("href", target.properties.get('balloonContentFooter'))
+				  })
 			  })
 
 		  }
@@ -85,19 +96,19 @@
 			  map.geoObjects.removeAll()
 			  data = [
 				{% for item in district  %}
-				  "{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
+				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
 			  	{% endfor %}
 			  ];
 			  data.forEach(item => {
 				  var divided = item.split('+')
-				  var name = divided[0]
-				  var description = divided[1]
-				  var x = parseFloat(divided[2])
-				  var y = parseFloat(divided[3])
+				  var name = divided[1]
+				  var description = divided[2]
+				  var x = parseFloat(divided[3])
+				  var y = parseFloat(divided[4])
 				  var placemark = new ymaps.Placemark([x,y], {
 					  balloonContentHeader: name,
 					  balloonContentBody: description,
-					  balloonContentFooter: 'Подвал'
+					  balloonContentFooter: divided[0]
 				  }, {
 					  iconLayout: 'default#image',
 					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
@@ -105,26 +116,30 @@
 					  iconImageOffset: [-19,-44]
 				  });
 				  map.geoObjects.add(placemark);
+				  map.geoObjects.events.add('click', function (e){
+					  var target = e.get('target');
+					  document.getElementById('button-build').setAttribute("href", target.properties.get('balloonContentFooter'))
+				  })
 			  })
 		  }
 	  }
 
 	  window.categoryChanged = function (theSelect){
-
+			document.getElementById('button-build').setAttribute("href", "")
 		  var selectedValue = theSelect.options[theSelect.selectedIndex].value;
 		  if (selectedValue == '0') {
 			  map.geoObjects.removeAll()
 			  data = [
 				{% for item in walk  %}
-				  "{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
+				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
 			  	{% endfor %}
 			  ];
 			  data.forEach(item => {
 				  var divided = item.split('+')
-				  var name = divided[0]
-				  var description = divided[1]
-				  var x = parseFloat(divided[2])
-				  var y = parseFloat(divided[3])
+				  var name = divided[1]
+				  var description = divided[2]
+				  var x = parseFloat(divided[3])
+				  var y = parseFloat(divided[4])
 				  var placemark = new ymaps.Placemark([x,y], {
 					  balloonContentHeader: name,
 					  balloonContentBody: description,
@@ -136,21 +151,25 @@
 					  iconImageOffset: [-19,-44]
 				  });
 				  map.geoObjects.add(placemark);
+				  map.geoObjects.events.add('click', function (e){
+					  var target = e.get('target');
+					  document.getElementById('button-build').setAttribute("href", target.properties.get('balloonContentFooter'))
+				  })
 			  })
 		  }
 		  else if (selectedValue == '1'){
 				map.geoObjects.removeAll()
 			  	data = [
 					{% for item in car  %}
-					  "{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
+					  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
 					{% endfor %}
 				  ];
 				data.forEach(item => {
 				  var divided = item.split('+')
-				  var name = divided[0]
-				  var description = divided[1]
-				  var x = parseFloat(divided[2])
-				  var y = parseFloat(divided[3])
+				  var name = divided[1]
+				  var description = divided[2]
+				  var x = parseFloat(divided[3])
+				  var y = parseFloat(divided[4])
 				  var placemark = new ymaps.Placemark([x,y], {
 					  balloonContentHeader: name,
 					  balloonContentBody: description,
@@ -162,21 +181,25 @@
 					  iconImageOffset: [-19,-44]
 				  });
 				  map.geoObjects.add(placemark);
+				  map.geoObjects.events.add('click', function (e){
+					  var target = e.get('target');
+					  document.getElementById('button-build').setAttribute("href", target.properties.get('balloonContentFooter'))
+				  })
 			  })
 		  }
 		  else{
 				map.geoObjects.removeAll()
 			  	data = [
 					{% for item in publicT  %}
-					  "{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
+					  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
 					{% endfor %}
 				  ];
 				data.forEach(item => {
 				  var divided = item.split('+')
-				  var name = divided[0]
-				  var description = divided[1]
-				  var x = parseFloat(divided[2])
-				  var y = parseFloat(divided[3])
+				  var name = divided[1]
+				  var description = divided[2]
+				  var x = parseFloat(divided[3])
+				  var y = parseFloat(divided[4])
 				  var placemark = new ymaps.Placemark([x,y], {
 					  balloonContentHeader: name,
 					  balloonContentBody: description,
@@ -188,11 +211,16 @@
 					  iconImageOffset: [-19,-44]
 				  });
 				  map.geoObjects.add(placemark);
+				  map.geoObjects.events.add('click', function (e){
+					  var target = e.get('target');
+					  document.getElementById('button-build').setAttribute("href", target.properties.get('balloonContentFooter'))
+				  })
 			  })
 		  }
 	  }
     }
     ymaps.ready(init);
+
   </script>
 	<main class="main">
 		<section class="intro">
@@ -284,13 +312,13 @@
 					<select id="selector" class="button-ready" onkeyup="this.onchange();"  onchange="selectChanged(this);">
 						<option selected disabled="true">готовые маршруты</option>
 						{% for result in data %}
-						<option value="{{result.description}}+{{result.headline}}+{{result.xCoords}}+{{result.yCoords}}">{{result.headline}}</option>
+						<option value="{{result.link}}+{{result.description}}+{{result.headline}}+{{result.xCoords}}+{{result.yCoords}}">{{result.headline}}</option>
 						{% endfor %}
 					</select>
 
-					<button class="button-build" onclick="ButtonBuild()">
+					<a class="button-build" id="button-build">
 						ПОСТРОИТЬ
-					</button>
+					</a>
 				</div>
 			</div>
 		</section>

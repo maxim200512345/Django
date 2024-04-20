@@ -17,6 +17,7 @@ class SomeView(TemplateView):
                 'xCoords' : obj.xCoords,
                 'yCoords' : obj.yCoords,
                 'description' : obj.description,
+                'link' : obj.link_to_map,
             }
         for obj in TouristObject.objects.all()
         ]
@@ -27,6 +28,7 @@ class SomeView(TemplateView):
                 'xCoords': obj.xCoords,
                 'yCoords': obj.yCoords,
                 'description': obj.description,
+                'link': obj.link_to_map,
             }
             for obj in TouristObject.objects.all().filter(location = 'город')
         ]
@@ -37,6 +39,7 @@ class SomeView(TemplateView):
                 'xCoords': obj.xCoords,
                 'yCoords': obj.yCoords,
                 'description': obj.description,
+                'link': obj.link_to_map,
             }
             for obj in TouristObject.objects.all().filter(location = 'область')
         ]
@@ -47,6 +50,7 @@ class SomeView(TemplateView):
                 'xCoords': obj.xCoords,
                 'yCoords': obj.yCoords,
                 'description': obj.description,
+                'link': obj.link_to_map,
             }
             for obj in TouristObject.objects.all().filter(difficult = '0')
         ]
@@ -57,6 +61,7 @@ class SomeView(TemplateView):
                 'xCoords': obj.xCoords,
                 'yCoords': obj.yCoords,
                 'description': obj.description,
+                'link': obj.link_to_map,
             }
             for obj in TouristObject.objects.all().filter(difficult='2')
         ]
@@ -67,6 +72,7 @@ class SomeView(TemplateView):
                 'xCoords': obj.xCoords,
                 'yCoords': obj.yCoords,
                 'description': obj.description,
+                'link': obj.link_to_map,
             }
             for obj in TouristObject.objects.all().filter(difficult='1')
         ]
