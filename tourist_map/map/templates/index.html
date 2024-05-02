@@ -16,9 +16,8 @@
 </head>
 <body>
 
-<!-- Начало сектора интро -->
-	<script src="https://api-maps.yandex.ru/2.1/?apikey=ваш API-ключ&lang=ru_RU"></script>
-	<script>
+<script src="https://api-maps.yandex.ru/2.1/?apikey=ваш API-ключ&lang=ru_RU"></script>
+<script>
     function init(){
       let map = new ymaps.Map('map', {
         center: [56.838011, 60.597474],
@@ -222,134 +221,110 @@
     ymaps.ready(init);
 
   </script>
-	<main class="main">
-		<section class="intro">
-
-<!-- начало header -->
-			<header class="header">
-				<div class="wrapper">
-					<div class="header-wrapper">
-						<div class="header-logo">
-							<a href="mainpage.html" class="header-logo-link">
-								<img src="{% static 'img/svg/logo.svg'%}" class="header-logo-pic">
-							</a>
-						</div>
-
-						<nav class="header">
-							<ul class="header-list">
-								<li class="header-item">
-									<a href='#' class="header-link">КАРТА</a>
-								</li>
-								<li class="header-item">
-									<a href='#' class="header-link">О НАС</a>
-								</li>
-								<li class="header-item">
-									<a href='#' class="header-link">КОНТАКТЫ</a>
-								</li>
-							</ul>
-						</nav>
-					</div>
+	<header class="header">
+		<div class="wrapper">
+			<div class="header_inner">
+				<div class="header_logo">
+					<img src="img/Logo.svg" alt="">
 				</div>
-			</header>
-<!-- Конец header -->
 
-			<div class="wrapper">
-				<h1 class="intro-title-1">
-					MAP
-				</h1>
-				<h1 class="intro-title-2">
-					MASTER
-				</h1>
-				<p class="text-intro">
-					Погрузитесь в мир увлекательных путешествий с нашей инновационной интерактивной картой. Откройте для себя уникальные маршруты, познакомьтесь с местными обычаями и создайте свою историю на карте мира.
-				</p>
+				<nav class="nav">
+					<a class="nav_link" href="#">КАРТА</a>
+					<a class="nav_link" href="#">О НАС</a>
+					<a class="nav_link" href="#">КОНТАКТЫ</a>
+				</nav>
 			</div>
-		</section>
+		</div>
+	</header>
 
-<!-- Конец сектора интро -->
+	<div class="intro">
+		<div class="wrapper">
+			<h1 class="intro_title_1">
+				MAP
+			</h1>
+			<h1 class="intro_title_2">
+				MASTER
+			</h1>
+			<p class="intro-text">
+				Погрузитесь в мир увлекательных путешествий с нашей инновационной интерактивной картой. Откройте для себя уникальные маршруты, познакомьтесь с местными обычаями и создайте свою историю на карте мира.
+			</p>
+		</div>
+	</div>
 
-<!-- Начало сектора Путешествия -->
-		<section class="travel">
-			<div class="wrapper">
-				<h2 class="travel-title">
-					ПУТЕШЕСТВИЯ
-				</h2>
-				<p class="travel-text1">
-					Путешествие  -  это ключ к новым эмоциям и впечатлениям! Отдохните от повседневной рутины, зарядитесь энергией и вдохновением, познавая мир. Откройте для себя новые вкусы, ароматы и звуки, станьте настоящим исследователем!
-				</p>
-				<p class="travel-text2">
-					У каждого маршрута есть описание, а удобный интерфейс карты поможет сделать Вашу поездку незабываемой. Доверьтесь нам и наслаждайтесь каждым моментом!
-				</p>
-			</div>
-		</section>
-<!-- Конец сектора Путешествия -->
+	<div class="travel">
+		<div class="wrapper">
+			<h1 class="travel_title">
+				ПУТЕШЕСТВИЕ
+			</h1>
+			<p class="travel_text_1">
+				Путешествие  -  это ключ к новым эмоциям и впечатлениям! Отдохните от повседневной рутины, зарядитесь энергией и вдохновением, познавая мир. Откройте для себя новые вкусы, ароматы и звуки, станьте настоящим исследователем!
+			</p>
+			<p class="travel_text_2">
+				У каждого маршрута есть описание, а удобный интерфейс карты поможет сделать Вашу поездку незабываемой. Доверьтесь нам и наслаждайтесь каждым моментом!
+			</p>
+		</div>
+	</div>
 
-<!-- Начало сектора Карта -->
+	<div class="build">
+		<div class="wrapper">
+			<h1 class="build_title">
+				ПОСТРОЙ СВОЙ </br>МАРШРУТ
+			</h1>
+			<div class="container">
+				<div class="road-map" id="map"></div>
+				<div class="vidg">
+					<p class="name-vidg">Название объекта</p>
+					<p class="inf-vidg">Информация</p>
+					<img class="img-vidg">
+				</div>
 
-		<section class="map">
-			<div class="wrapper">
-				<h2 class="map-title">
-					ПОСТРОЙ СВОЙ МАРШРУТ
-				</h2>
-				<div class="marh">
-					<div class="road-map" id="map"></div>
-					<!--<button class="button-category" onclick="ButtonCategory()">
-						категория маршрута
-					</button>-->
-					<select id="button-category" class="button-category" onkeyup="this.onchange()" onchange="categoryChanged(this)">
-						<option selected disabled="true">Категория Маршрута</option>
-						<option value="2">На Автомобиле</option>
-						<option value="0">Пеший</option>
-						<option value="1">На Общественном транспорте</option>
+				<select id="button-category" class="button-category" onkeyup="this.onchange()" onchange="categoryChanged(this)">
+						<div class="button-category-activ">
+							<option selected disabled="true" class="category-activ-name">Категория Маршрута</option>
+							<option value="2" class="on-car">На Автомобиле</option>
+							<option value="0" class="pesh">Пеший</option>
+							<option value="1" class="soctrans">На Общественном транспорте</option>
+						</div>
 					</select>
 
-					<select id="city_selector" class="button-city"  onkeyup="this.onchange()" onchange="cityChanged(this);">
-						<option selected disabled="true">город и область</option>
-						<option value="0">Екатеринбург</option>
-						<option value="1">Свердловская область</option>
+				<select id="city_selector" class="button-city"  onkeyup="this.onchange()" onchange="cityChanged(this);">
+						<option selected disabled="true" class="city-activ-name">город и область</option>
+						<option value="0" class="Ekb">Екатеринбург</option>
+						<option value="1" class="Obl">Свердловская область</option>
 					</select>
 
-					<select id="selector" class="button-ready" onkeyup="this.onchange();"  onchange="selectChanged(this);">
-						<option selected disabled="true">готовые маршруты</option>
+				<select id="selector" class="button-ready" onkeyup="this.onchange();"  onchange="selectChanged(this);">
+						<option selected disabled="true" class="ready-activ-name">готовые маршруты</option>
 						{% for result in data %}
 						<option value="{{result.link}}+{{result.description}}+{{result.headline}}+{{result.xCoords}}+{{result.yCoords}}">{{result.headline}}</option>
 						{% endfor %}
 					</select>
 
-					<a class="button-build" id="button-build">
-						ПОСТРОИТЬ
-					</a>
-				</div>
+				<a class="button-build" id="button-build">
+					ПОСТРОИТЬ
+				</a>
 			</div>
-		</section>
+		</div>
+	</div>
 
-<!-- Конец сектора Карта -->
+	<div class="void">
 
-		<section class="void"></section>
+	</div>
 
-		<section class="contacts">
-			<h class="contacts">
-				Контакты
-			</h>
-			<p class="Tim">
-				Солдатов Тимофей<br /> тимлид
-			</p>
-			<p class="Vlad">
-				Чумейко Владислав<br /> front-end разработчик
-			</p>
-			<p class="Alex">
-				Балабух Александр<br /> дизайнер
-			</p>
-			<p class="Maks">
-				Кедров Максим<br /> back-end разработчик
-			</p>
-			<p class="nomer">
-				89126649950
-			</p>
-			<p class="mail">
-				mapmaster268@gmail.com
-			</p>
-		</section>
-	</main>
+	<div class="contacts">
+		<div class="wrapper">
+			<h1 class="contacts_title">
+				КОНТАКТЫ
+			</h1>
+			<p class="Tim"><b>Солдатов Тимофей</b> </br>тимлид</p>
+			<p class="Alex"><b>Балабух Александр</b> </br>дизайнер</p>
+			<p class="Vlad"><b>Чумейко Владислав</b> </br>fornt-end </br>разработчик</p>
+			<p class="Maks"><b>Кедров Максим</b> </br>back-end </br>разработчик</p>
+			<p class="nomer">89126649950</p>
+			<p class="mail">mapmaster268@gmail.com</p>
+		</div>
+	</div>
+
+
 </body>
 </html>
