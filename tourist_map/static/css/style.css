@@ -366,7 +366,9 @@ body{
 }
 
 /* Активированная кнопка готовые маршруты ====================*/
-
+a{
+  all: unset;
+}
 .button-build{
   background: rgba(217, 217, 217, 0.1);
   border: 5px solid #FFFFFF;

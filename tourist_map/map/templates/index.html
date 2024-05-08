@@ -18,11 +18,25 @@
 
 <script src="https://api-maps.yandex.ru/2.1/?apikey=ваш API-ключ&lang=ru_RU"></script>
 <script>
+	function makePlaceMark(name, desc, link){
+		  var placemark = new ymaps.Placemark([x,y], {
+			balloonContentHeader: name,
+			balloonContentBody: desc,
+			balloonContentFooter : link,
+		}, {
+			iconLayout: 'default#image',
+			iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
+			iconImageSize: [100, 100],
+			iconImageOffset: [-19, -44]
+		});
+		  map.geoObjects.add(placemark);
+	  }
     function init(){
       let map = new ymaps.Map('map', {
         center: [56.838011, 60.597474],
         zoom: 13
       });
+
 	  map.controls.remove('geolocationControl'); // удаляем геолокацию
 	  map.controls.remove('searchControl'); // удаляем поиск
 	  map.controls.remove('trafficControl'); // удаляем контроль трафика
@@ -31,31 +45,59 @@
 	  map.controls.remove('zoomControl'); // удаляем контрол зуммирования
 	  map.controls.remove('rulerControl'); // удаляем контрол правил
 
-		var link = "";
-      window.selectChanged = function(theSelect) {
-		  map.geoObjects.removeAll()
-      	var selectedValue = theSelect.options[theSelect.selectedIndex].value.split('+');
-		  link = selectedValue[0]
-      	var x = parseFloat(selectedValue[3]);
-      	var y = parseFloat(selectedValue[4]);
 
-		map.setCenter([x,y]);
-		//сюда любой html, css код сувать можно, работа фронта,
-		var placemark = new ymaps.Placemark([x,y], {
-			balloonContentHeader: selectedValue[2],
-			balloonContentBody: selectedValue[1],
-			balloonContentFooter : 'Подвал',
-		}, {
-			iconLayout: 'default#image',
-			iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
-			iconImageSize: [100, 100],
-			iconImageOffset: [-19, -44]
-		});
-		map.geoObjects.add(placemark);
-		document.getElementById('button-build').setAttribute("href", link)
+		var points = [{% for item in all  %}
+				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
+			  	{% endfor %}]
+		points.forEach(item => {
+			var divided = item.split('+')
+				  var name = divided[1]
+				  var description = divided[2]
+				  var x = parseFloat(divided[3])
+				  var y = parseFloat(divided[4])
+				  var placemark = new ymaps.Placemark([x,y], {
+					  balloonContentHeader: name,
+					  balloonContentBody: description,
+				  }, {
+					  iconLayout: 'default#image',
+					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
+					  iconImageSize: [100, 100],
+					  iconImageOffset: [-19,-44]
+				  });
+				  map.geoObjects.add(placemark);
+				  placemark.events.add('click', (e) => {
+					  var a = document.getElementById("button-build");
+					  var sub = "amp;"
+					  var link = divided[0].replaceAll(sub, "")
+					  a.href = link
+					})
+		})
+      window.selectChanged = function(theSelect) {
+		  	map.geoObjects.removeAll()
+			var selectedValue = theSelect.options[theSelect.selectedIndex].value.split('+');
+			var x = parseFloat(selectedValue[3]);
+			var y = parseFloat(selectedValue[4]);
+
+			map.setCenter([x,y]);
+			//сюда любой html, css код сувать можно, работа фронта,
+			var placemark = new ymaps.Placemark([x,y], {
+				balloonContentHeader: selectedValue[2],
+				balloonContentBody: selectedValue[1],
+			}, {
+				iconLayout: 'default#image',
+				iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
+				iconImageSize: [100, 100],
+				iconImageOffset: [-19, -44]
+			});
+			map.geoObjects.add(placemark);
+			placemark.events.add('click', () => {
+				var a = document.getElementById("button-build");
+				console.log(selectedValue[0])
+				a.href = selectedValue[0]
+			})
       };
 
-	  window.cityChanged = function (theSelect, context){
+	  window.cityChanged = function (theSelect){
 		  document.getElementById('button-build').setAttribute("href", "")
 		  map.geoObjects.removeAll()
 		  var selectedValue = theSelect.options[theSelect.selectedIndex].value;
@@ -75,7 +117,6 @@
 				  var placemark = new ymaps.Placemark([x,y], {
 					  balloonContentHeader: name,
 					  balloonContentBody: description,
-					  balloonContentFooter: divided[0]
 				  }, {
 					  iconLayout: 'default#image',
 					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
@@ -83,11 +124,12 @@
 					  iconImageOffset: [-19,-44]
 				  });
 				  map.geoObjects.add(placemark);
-				  map.geoObjects.events.add('click', function (e){
-					  var target = e.get('target');
-					  link = target.properties.get('balloonContentFooter')
-					  document.getElementById('button-build').setAttribute("href", target.properties.get('balloonContentFooter'))
-				  })
+				  placemark.events.add('click', (e) => {
+					  var a = document.getElementById("button-build");
+					  var sub = "amp;"
+					  var link = divided[0].replaceAll(sub, "")
+					  a.href = link
+					})
 			  })
 
 		  }
@@ -107,7 +149,6 @@
 				  var placemark = new ymaps.Placemark([x,y], {
 					  balloonContentHeader: name,
 					  balloonContentBody: description,
-					  balloonContentFooter: divided[0]
 				  }, {
 					  iconLayout: 'default#image',
 					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
@@ -115,10 +156,12 @@
 					  iconImageOffset: [-19,-44]
 				  });
 				  map.geoObjects.add(placemark);
-				  map.geoObjects.events.add('click', function (e){
-					  var target = e.get('target');
-					  document.getElementById('button-build').setAttribute("href", target.properties.get('balloonContentFooter'))
-				  })
+				  placemark.events.add('click', (e) => {
+					  var a = document.getElementById("button-build");
+					  var sub = "amp;"
+					  var link = divided[0].replaceAll(sub, "")
+					  a.href = link
+					})
 			  })
 		  }
 	  }
@@ -142,7 +185,6 @@
 				  var placemark = new ymaps.Placemark([x,y], {
 					  balloonContentHeader: name,
 					  balloonContentBody: description,
-					  balloonContentFooter: 'Подвал'
 				  }, {
 					  iconLayout: 'default#image',
 					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
@@ -150,10 +192,12 @@
 					  iconImageOffset: [-19,-44]
 				  });
 				  map.geoObjects.add(placemark);
-				  map.geoObjects.events.add('click', function (e){
-					  var target = e.get('target');
-					  document.getElementById('button-build').setAttribute("href", target.properties.get('balloonContentFooter'))
-				  })
+				  placemark.events.add('click', (e) => {
+					  var a = document.getElementById("button-build");
+					  var sub = "amp;"
+					  var link = divided[0].replaceAll(sub, "")
+					  a.href = link
+					})
 			  })
 		  }
 		  else if (selectedValue == '1'){
@@ -172,7 +216,6 @@
 				  var placemark = new ymaps.Placemark([x,y], {
 					  balloonContentHeader: name,
 					  balloonContentBody: description,
-					  balloonContentFooter: 'Подвал'
 				  }, {
 					  iconLayout: 'default#image',
 					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
@@ -180,10 +223,12 @@
 					  iconImageOffset: [-19,-44]
 				  });
 				  map.geoObjects.add(placemark);
-				  map.geoObjects.events.add('click', function (e){
-					  var target = e.get('target');
-					  document.getElementById('button-build').setAttribute("href", target.properties.get('balloonContentFooter'))
-				  })
+				  placemark.events.add('click', (e) => {
+					  var a = document.getElementById("button-build");
+					  var sub = "amp;"
+					  var link = divided[0].replaceAll(sub, "")
+					  a.href = link
+					})
 			  })
 		  }
 		  else{
@@ -202,7 +247,6 @@
 				  var placemark = new ymaps.Placemark([x,y], {
 					  balloonContentHeader: name,
 					  balloonContentBody: description,
-					  balloonContentFooter: 'Подвал'
 				  }, {
 					  iconLayout: 'default#image',
 					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
@@ -210,10 +254,12 @@
 					  iconImageOffset: [-19,-44]
 				  });
 				  map.geoObjects.add(placemark);
-				  map.geoObjects.events.add('click', function (e){
-					  var target = e.get('target');
-					  document.getElementById('button-build').setAttribute("href", target.properties.get('balloonContentFooter'))
-				  })
+				  placemark.events.add('click', (e) => {
+					  var a = document.getElementById("button-build");
+					  var sub = "amp;"
+					  var link = divided[0].replaceAll(sub, "")
+					  a.href = link
+					})
 			  })
 		  }
 	  }
@@ -229,9 +275,9 @@
 				</div>
 
 				<nav class="nav">
-					<a class="nav_link" href="#">КАРТА</a>
+					<a class="nav_link" href="#map">КАРТА</a>
 					<a class="nav_link" href="#">О НАС</a>
-					<a class="nav_link" href="#">КОНТАКТЫ</a>
+					<a class="nav_link" href="#contacts">КОНТАКТЫ</a>
 				</nav>
 			</div>
 		</div>
@@ -295,7 +341,7 @@
 
 				<select id="selector" class="button-ready" onkeyup="this.onchange();"  onchange="selectChanged(this);">
 						<option selected disabled="true" class="ready-activ-name">готовые маршруты</option>
-						{% for result in data %}
+						{% for result in all %}
 						<option value="{{result.link}}+{{result.description}}+{{result.headline}}+{{result.xCoords}}+{{result.yCoords}}">{{result.headline}}</option>
 						{% endfor %}
 					</select>
@@ -311,7 +357,7 @@
 
 	</div>
 
-	<div class="contacts">
+	<div class="contacts" id="contacts">
 		<div class="wrapper">
 			<h1 class="contacts_title">
 				КОНТАКТЫ
@@ -324,7 +370,5 @@
 			<p class="mail">mapmaster268@gmail.com</p>
 		</div>
 	</div>
-
-
 </body>
 </html>
