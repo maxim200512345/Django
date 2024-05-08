@@ -574,3 +574,174 @@ a{
   }
 }
 /* media laptop ====================*/
+/* media smartfon ====================*/
+
+@media (max-width: 480px){
+
+  .wrapper{
+    max-width: 408px;
+  }
+
+  .intro{
+    background: url("../img/intro480.jpg") center no-repeat;
+    background-size: cover;
+    padding-top: 40px;
+    height: 800px;
+  }
+
+  .travel{
+    background: url("../img/travel480.jpg") center no-repeat;
+    background-size: cover;
+    height: 800px;
+  }
+
+  .build{
+    background: url("../img/map480.jpg") center no-repeat;
+    background-size: cover;
+    height: 800px;
+  }
+
+  .void{
+    display: none;
+  }
+
+  .contacts{
+    background: url("../img/contacts480.jpg") center no-repeat;
+    background-size: cover;
+    height: 800px;
+  }
+
+  .nav_link{
+    margin-left: 42px;
+    font-weight: 100;
+    font-size: 18px;
+  }
+
+  .header_inner{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 25px 0;
+  }
+
+  .header{
+    height: 40px;
+  }
+
+  .intro_title_1{
+    font-size: 45px;
+  }
+
+  .intro_title_2{
+    font-size: 45px;
+    margin: -12px 28px;
+  }
+
+  .intro-text{
+    font-size: 18px;
+    margin: 50px 0px;
+  }
+
+  .travel_title{
+    font-size: 45px;
+  }
+
+  .travel_text_1{
+    font-size: 18px;
+  }
+
+  .travel_text_2{
+    font-size: 18px;
+    margin: 25px 0px;
+  }
+
+  .build_title{
+    font-size: 45px;
+  }
+
+  .contacts_title{
+    font-size: 45px;
+    margin-top: 180px;
+    margin-bottom: 0px;
+  }
+
+  .Tim{
+    margin-top: 35px;
+    margin-left: 124px;
+    font-size: 18px;
+    margin-bottom: 70px;
+  }
+
+  .Alex{
+    margin-left: 220px;
+    font-size: 18px;
+  }
+
+  .Vlad{
+    margin: 50px 0px 50px 124px;
+    font-size: 18px;
+  }
+
+  .Maks{
+    margin-left: 270px;
+    font-size: 18px;
+    margin-bottom: 57px;
+  }
+
+  .nomer{
+    margin-left: 43px;
+    font-size: 12px;
+  }
+
+  .mail{
+    margin-left: 185px;
+    font-size: 12px;
+    margin-top: 22px;
+  }
+
+  .button-category{
+    width: 124px;
+    font-size: 10px;
+    height: 40px;
+    grid-row: 1/1;
+    grid-column: 1/2;
+  }
+
+  .button-city{
+    width: 124px;
+    font-size: 10px;
+    height: 40px;
+    grid-row: 1/1;
+    grid-column: 2/3;
+  }
+
+  .button-ready{
+    width: 124px;
+    font-size: 10px;
+    height: 40px;
+    grid-row: 1/1;
+    grid-column: 3/4;
+  }
+
+  .button-build{
+    width: 124px;
+    font-size: 10px;
+    height: 40px;
+    grid-row: 14/14;
+    grid-column: 3/4;
+  }
+
+  .road-map{
+    grid-row: 3/13;
+    grid-column: 1/4;
+    height: 100%;
+  }
+
+  .container{
+    display: grid;
+    grid-template-columns: repeat(3, 115fr);
+    grid-template-rows: repeat(14, 40px);
+  }
+}
+
+/* media smartfon ====================*/
