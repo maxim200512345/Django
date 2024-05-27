@@ -13,4 +13,5 @@ class TouristObject(models.Model):
     end_coordinates = models.TextField()
     link_to_map = models.TextField()
     approximate_duration = models.TextField()
-    distance_from_railwayStation = models.IntegerField()
+    full_description = models.TextField()
+    typeOfRoute = models.TextField()
