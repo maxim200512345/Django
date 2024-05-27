@@ -61,8 +61,8 @@
 				  }, {
 					  iconLayout: 'default#image',
 					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
-					  iconImageSize: [100, 100],
-					  iconImageOffset: [-19,-44]
+					  iconImageSize: [15, 15],
+					  iconImageOffset: [-15,-40]
 				  });
 				  map.geoObjects.add(placemark);
 				  placemark.events.add('click', (e) => {
@@ -70,6 +70,31 @@
 					  var sub = "amp;"
 					  var link = divided[0].replaceAll(sub, "")
 					  a.href = link
+					  var route =  [
+						{% for value in all  %}
+						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}}",
+						{% endfor %}
+				  	  ];
+
+					  var geometry = []
+
+					var properties = {
+						hintContent: "Ломаная линия"
+					}
+					var options = {
+						draggable: false,
+						strokeColor: '#ff0000',
+						strokeWidth: 1
+
+					}
+					for (var i = 0; i < points.length; i++){
+						var point = points[i].split("+");
+						var coords = [point[3], point[4]]
+						console.log(coords)
+						geometry.push(coords);
+					}
+					polyline = new ymaps.Polyline(geometry, properties, options);
+					map.geoObjects.add(polyline);
 					})
 		})
 
@@ -87,8 +112,8 @@
 			}, {
 				iconLayout: 'default#image',
 				iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
-				iconImageSize: [100, 100],
-				iconImageOffset: [-19, -44]
+				iconImageSize: [15, 15],
+				iconImageOffset: [-15,-40]
 			});
 			map.geoObjects.add(placemark);
 			placemark.events.add('click', () => {
@@ -121,8 +146,8 @@
 				  }, {
 					  iconLayout: 'default#image',
 					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
-					  iconImageSize: [100, 100],
-					  iconImageOffset: [-19,-44]
+					  iconImageSize: [15, 15],
+					  iconImageOffset: [-15,-40]
 				  });
 				  map.geoObjects.add(placemark);
 				  placemark.events.add('click', (e) => {
@@ -153,20 +178,14 @@
 				  }, {
 					  iconLayout: 'default#image',
 					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
-					  iconImageSize: [100, 100],
-					  iconImageOffset: [-19,-44]
+					  iconImageSize: [15, 15],
+					  iconImageOffset: [-15,-40]
 				  });
 				  map.geoObjects.add(placemark);
-				  placemark.events.add('click', (e) => {
-					  var a = document.getElementById("button-build");
-					  var sub = "amp;"
-					  var link = divided[0].replaceAll(sub, "")
-					  a.href = link
-					})
+
 			  })
 		  }
 	  }
-
 	  window.categoryChanged = function (theSelect){
 			document.getElementById('button-build').setAttribute("href", "")
 		  var selectedValue = theSelect.options[theSelect.selectedIndex].value;
@@ -189,16 +208,10 @@
 				  }, {
 					  iconLayout: 'default#image',
 					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
-					  iconImageSize: [100, 100],
-					  iconImageOffset: [-19,-44]
+					  iconImageSize: [15, 15],
+					  iconImageOffset: [-15,-40]
 				  });
 				  map.geoObjects.add(placemark);
-				  placemark.events.add('click', (e) => {
-					  var a = document.getElementById("button-build");
-					  var sub = "amp;"
-					  var link = divided[0].replaceAll(sub, "")
-					  a.href = link
-					})
 			  })
 		  }
 		  else if (selectedValue == '1'){
@@ -220,16 +233,10 @@
 				  }, {
 					  iconLayout: 'default#image',
 					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
-					  iconImageSize: [100, 100],
-					  iconImageOffset: [-19,-44]
+					  iconImageSize: [15, 15],
+					  iconImageOffset: [-15,-40]
 				  });
 				  map.geoObjects.add(placemark);
-				  placemark.events.add('click', (e) => {
-					  var a = document.getElementById("button-build");
-					  var sub = "amp;"
-					  var link = divided[0].replaceAll(sub, "")
-					  a.href = link
-					})
 			  })
 		  }
 		  else{
@@ -251,19 +258,14 @@
 				  }, {
 					  iconLayout: 'default#image',
 					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
-					  iconImageSize: [100, 100],
-					  iconImageOffset: [-19,-44]
+					  iconImageSize: [15, 15],
+					  iconImageOffset: [-15,-40]
 				  });
 				  map.geoObjects.add(placemark);
-				  placemark.events.add('click', (e) => {
-					  var a = document.getElementById("button-build");
-					  var sub = "amp;"
-					  var link = divided[0].replaceAll(sub, "")
-					  a.href = link
-					})
 			  })
 		  }
 	  }
+
     }
     ymaps.ready(init);
 
