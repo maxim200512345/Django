@@ -6,7 +6,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Map Master</title>
 	<link rel="stylesheet" href="{% static 'css/style.css'%}" type="text/css">
-	<script src="{% static 'js/OnClickButtons.js' %}"></script>
 	<script
 	  src="https://code.jquery.com/jquery-3.6.3.js"
 	  integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
@@ -32,25 +31,164 @@
 		  map.geoObjects.add(placemark);
 	  }
     function init(){
-      let map = new ymaps.Map('map', {
+   		let map = new ymaps.Map('map', {
         center: [56.838011, 60.597474],
         zoom: 13
-      });
+    });
 
-	  map.controls.remove('geolocationControl'); // удаляем геолокацию
-	  map.controls.remove('searchControl'); // удаляем поиск
-	  map.controls.remove('trafficControl'); // удаляем контроль трафика
-	  map.controls.remove('typeSelector'); // удаляем тип
-	  map.controls.remove('fullscreenControl'); // удаляем кнопку перехода в полноэкранный режим
-	  map.controls.remove('zoomControl'); // удаляем контрол зуммирования
-	  map.controls.remove('rulerControl'); // удаляем контрол правил
+	map.controls.remove('geolocationControl'); // удаляем геолокацию
+	map.controls.remove('searchControl'); // удаляем поиск
+	map.controls.remove('trafficControl'); // удаляем контроль трафика
+	map.controls.remove('typeSelector'); // удаляем тип
+	map.controls.remove('fullscreenControl'); // удаляем кнопку перехода в полноэкранный режим
+	map.controls.remove('zoomControl'); // удаляем контрол зуммирования
+	map.controls.remove('rulerControl'); // удаляем контрол правил
 
 
-		var points = [{% for item in all  %}
-				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
-			  	{% endfor %}]
+
+	var points = [{% for item in all  %}
+		"{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}}",
+		{% endfor %}]
 		points.forEach(item => {
 			var divided = item.split('+')
+				  var name = divided[1]
+				  var description = divided[2]
+				  var x = parseFloat(divided[3])
+				  var y = parseFloat(divided[4])
+				  var imageLink = divided[5]
+				  var counter = 0;
+				  BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
+            '<div>' +
+                '<b><div class="balloon-head balloon">$[properties.balloonHeader]</div></b>' +
+                '<img src="$[properties.image]" width="300px" height="300px" />'+
+                '<div class="balloon-body balloon">$[properties.balloonContent]</div>' +
+                '<button id="counter-button">подробнее </button>' +
+            '</div>', {
+            build: function () {
+                BalloonContentLayout.superclass.build.call(this);
+                $('#counter-button').bind('click', this.onCounterClick);
+            },
+            clear: function () {
+                $('#counter-button').unbind('click', this.onCounterClick);
+                BalloonContentLayout.superclass.clear.call(this);
+            }
+
+            onCounterClick: function () {
+                const container = `
+					  <div id='container'>
+						<btn id='btn-1'>btn</btn>
+					  </div>`;
+            }
+        });
+				  var placemark = new ymaps.Placemark([x, y], {
+						balloonHeader: name,
+						balloonContent: description,
+						balloonMinWidth: 500,
+						balloonMinHeight: 500,
+						image: imageLink
+					}, {
+						balloonContentLayout: BalloonContentLayout,
+
+						// Запретим замену обычного балуна на балун-панель.
+						// Если не указывать эту опцию, на картах маленького размера откроется балун-панель.
+					});
+				  map.geoObjects.add(placemark);
+				  placemark.events.add('click', (e) => {
+					  var a = document.getElementById("button-build");
+					  var sub = "amp;"
+					  var link = divided[0].replaceAll(sub, "")
+					  a.href = link
+					  var route =  [
+						{% for value in all  %}
+						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}}",
+						{% endfor %}
+				  	  ];
+
+					  var geometry = []
+
+					var properties = {
+						hintContent: "Ломаная линия"
+					}
+					var options = {
+						draggable: false,
+						strokeColor: '#ff0000',
+						strokeWidth: 1
+
+					}
+					for (var i = 0; i < points.length; i++){
+						var point = points[i].split("+");
+						var coords = [point[3], point[4]]
+						geometry.push(coords);
+					}
+					polyline = new ymaps.Polyline(geometry, properties, options);
+					map.geoObjects.add(polyline);
+					})
+		})
+
+      window.selectChanged = function(theSelect) {
+		  	map.geoObjects.removeAll()
+			var selectedValue = theSelect.options[theSelect.selectedIndex].value.split('+');
+			var x = parseFloat(selectedValue[3]);
+			var y = parseFloat(selectedValue[4]);
+
+			map.setCenter([x,y]);
+			//сюда любой html, css код сувать можно, работа фронта,
+			var placemark = new ymaps.Placemark([x,y], {
+				balloonContentHeader: selectedValue[2],
+				balloonContentBody: selectedValue[1],
+			}, {
+				iconLayout: 'default#image',
+				iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
+				iconImageSize: [15, 15],
+				iconImageOffset: [-15,-40]
+			});
+			map.geoObjects.add(placemark);
+			placemark.events.add('click', (e) => {
+					  var a = document.getElementById("button-build");
+					  var sub = "amp;"
+					  var link = divided[0].replaceAll(sub, "")
+					  a.href = link
+					  var route =  [
+						{% for value in all  %}
+						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}}",
+						{% endfor %}
+				  	  ];
+
+					  var geometry = []
+
+					var properties = {
+						hintContent: "Ломаная линия"
+					}
+					var options = {
+						draggable: false,
+						strokeColor: '#ff0000',
+						strokeWidth: 1
+
+					}
+					for (var i = 0; i < points.length; i++){
+						var point = points[i].split("+");
+						var coords = [point[3], point[4]]
+						console.log(coords)
+						geometry.push(coords);
+					}
+					polyline = new ymaps.Polyline(geometry, properties, options);
+					map.geoObjects.add(polyline);
+					})
+      };
+
+	  window.cityChanged = function (theSelect){
+		  document.getElementById('button-build').setAttribute("href", "")
+		  map.geoObjects.removeAll()
+		  var selectedValue = theSelect.options[theSelect.selectedIndex].value;
+		  if (selectedValue == '0')
+		  {
+			  var data = [
+				{% for item in ekb  %}
+				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
+			  	{% endfor %}
+			  ];
+			  data.forEach(item => {
+				  var divided = item.split('+')
 				  var name = divided[1]
 				  var description = divided[2]
 				  var x = parseFloat(divided[3])
@@ -95,66 +233,6 @@
 					}
 					polyline = new ymaps.Polyline(geometry, properties, options);
 					map.geoObjects.add(polyline);
-					})
-		})
-
-      window.selectChanged = function(theSelect) {
-		  	map.geoObjects.removeAll()
-			var selectedValue = theSelect.options[theSelect.selectedIndex].value.split('+');
-			var x = parseFloat(selectedValue[3]);
-			var y = parseFloat(selectedValue[4]);
-
-			map.setCenter([x,y]);
-			//сюда любой html, css код сувать можно, работа фронта,
-			var placemark = new ymaps.Placemark([x,y], {
-				balloonContentHeader: selectedValue[2],
-				balloonContentBody: selectedValue[1],
-			}, {
-				iconLayout: 'default#image',
-				iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
-				iconImageSize: [15, 15],
-				iconImageOffset: [-15,-40]
-			});
-			map.geoObjects.add(placemark);
-			placemark.events.add('click', () => {
-				var a = document.getElementById("button-build");
-				console.log(selectedValue[0])
-				a.href = selectedValue[0]
-			})
-      };
-
-	  window.cityChanged = function (theSelect){
-		  document.getElementById('button-build').setAttribute("href", "")
-		  map.geoObjects.removeAll()
-		  var selectedValue = theSelect.options[theSelect.selectedIndex].value;
-		  if (selectedValue == '0')
-		  {
-			  var data = [
-				{% for item in ekb  %}
-				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
-			  	{% endfor %}
-			  ];
-			  data.forEach(item => {
-				  var divided = item.split('+')
-				  var name = divided[1]
-				  var description = divided[2]
-				  var x = parseFloat(divided[3])
-				  var y = parseFloat(divided[4])
-				  var placemark = new ymaps.Placemark([x,y], {
-					  balloonContentHeader: name,
-					  balloonContentBody: description,
-				  }, {
-					  iconLayout: 'default#image',
-					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
-					  iconImageSize: [15, 15],
-					  iconImageOffset: [-15,-40]
-				  });
-				  map.geoObjects.add(placemark);
-				  placemark.events.add('click', (e) => {
-					  var a = document.getElementById("button-build");
-					  var sub = "amp;"
-					  var link = divided[0].replaceAll(sub, "")
-					  a.href = link
 					})
 			  })
 
@@ -212,6 +290,37 @@
 					  iconImageOffset: [-15,-40]
 				  });
 				  map.geoObjects.add(placemark);
+				  placemark.events.add('click', (e) => {
+					  var a = document.getElementById("button-build");
+					  var sub = "amp;"
+					  var link = divided[0].replaceAll(sub, "")
+					  a.href = link
+					  var route =  [
+						{% for value in all  %}
+						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}}",
+						{% endfor %}
+				  	  ];
+
+					  var geometry = []
+
+					var properties = {
+						hintContent: "Ломаная линия"
+					}
+					var options = {
+						draggable: false,
+						strokeColor: '#ff0000',
+						strokeWidth: 1
+
+					}
+					for (var i = 0; i < points.length; i++){
+						var point = points[i].split("+");
+						var coords = [point[3], point[4]]
+						console.log(coords)
+						geometry.push(coords);
+					}
+					polyline = new ymaps.Polyline(geometry, properties, options);
+					map.geoObjects.add(polyline);
+					})
 			  })
 		  }
 		  else if (selectedValue == '1'){
@@ -237,6 +346,37 @@
 					  iconImageOffset: [-15,-40]
 				  });
 				  map.geoObjects.add(placemark);
+				  placemark.events.add('click', (e) => {
+					  var a = document.getElementById("button-build");
+					  var sub = "amp;"
+					  var link = divided[0].replaceAll(sub, "")
+					  a.href = link
+					  var route =  [
+						{% for value in all  %}
+						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}}",
+						{% endfor %}
+				  	  ];
+
+					  var geometry = []
+
+					var properties = {
+						hintContent: "Ломаная линия"
+					}
+					var options = {
+						draggable: false,
+						strokeColor: '#ff0000',
+						strokeWidth: 1
+
+					}
+					for (var i = 0; i < points.length; i++){
+						var point = points[i].split("+");
+						var coords = [point[3], point[4]]
+						console.log(coords)
+						geometry.push(coords);
+					}
+					polyline = new ymaps.Polyline(geometry, properties, options);
+					map.geoObjects.add(polyline);
+					})
 			  })
 		  }
 		  else{
@@ -262,6 +402,37 @@
 					  iconImageOffset: [-15,-40]
 				  });
 				  map.geoObjects.add(placemark);
+				  placemark.events.add('click', (e) => {
+					  var a = document.getElementById("button-build");
+					  var sub = "amp;"
+					  var link = divided[0].replaceAll(sub, "")
+					  a.href = link
+					  var route =  [
+						{% for value in all  %}
+						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}}",
+						{% endfor %}
+				  	  ];
+
+					  var geometry = []
+
+					var properties = {
+						hintContent: "Ломаная линия"
+					}
+					var options = {
+						draggable: false,
+						strokeColor: '#ff0000',
+						strokeWidth: 1
+
+					}
+					for (var i = 0; i < points.length; i++){
+						var point = points[i].split("+");
+						var coords = [point[3], point[4]]
+						console.log(coords)
+						geometry.push(coords);
+					}
+					polyline = new ymaps.Polyline(geometry, properties, options);
+					map.geoObjects.add(polyline);
+					})
 			  })
 		  }
 	  }

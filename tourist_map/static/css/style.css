@@ -200,7 +200,7 @@ body{
 .road-map{
   grid-row: 1/8;
   grid-column: 1/7;
-
+  width: 660px;
   height: 660px;
   background: rgba(217, 217, 217, 0.1);
   border: 5px solid #FFFFFF;

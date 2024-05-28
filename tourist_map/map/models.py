@@ -15,3 +15,4 @@ class TouristObject(models.Model):
     approximate_duration = models.TextField()
     full_description = models.TextField()
     typeOfRoute = models.TextField()
+    image = models.TextField()

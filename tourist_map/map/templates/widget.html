@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+            .widget {
+      width: 90%;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background-color: rgba(217, 217, 217, 0.1);
+    }
+
+    .scrollable-description {
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    img {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    </style>
+</head>
+<body>
+    <div class="widget">
+        <h2>Название объекта</h2>
+        <div class="scrollable-description">
+            <p>Описание</p>
+        </div>
+        <img src="image.jpg" alt="Изображение объекта">
+    </div>
+    <script>
+        const description = document.querySelector('.scrollable-description');
+if (description.scrollHeight > description.clientHeight) {
+  description.style.paddingRight = '20px';
+}
+    </script>
+</body>
+</html>

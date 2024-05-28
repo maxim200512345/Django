@@ -18,6 +18,7 @@ class SomeView(TemplateView):
                 'yCoords' : obj.yCoords,
                 'description' : obj.description,
                 'link' : obj.link_to_map,
+                'image': obj.image
             }
         for obj in TouristObject.objects.all()
         ]
