@@ -66,18 +66,11 @@
             '</div>', {
             build: function () {
                 BalloonContentLayout.superclass.build.call(this);
-                $('#counter-button').bind('click', this.onCounterClick);
+
             },
             clear: function () {
-                $('#counter-button').unbind('click', this.onCounterClick);
-                BalloonContentLayout.superclass.clear.call(this);
-            }
 
-            onCounterClick: function () {
-                const container = `
-					  <div id='container'>
-						<btn id='btn-1'>btn</btn>
-					  </div>`;
+                BalloonContentLayout.superclass.clear.call(this);
             }
         });
 				  var placemark = new ymaps.Placemark([x, y], {
