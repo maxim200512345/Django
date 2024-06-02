@@ -18,9 +18,24 @@ class SomeView(TemplateView):
                 'yCoords' : obj.yCoords,
                 'description' : obj.description,
                 'link' : obj.link_to_map,
-                'image': obj.image
+                'image': obj.image,
+                'typeOfRoute': obj.typeOfRoute
+
             }
         for obj in TouristObject.objects.all()
+        ]
+        context['routes'] = [
+            {
+                'id': obj.id,
+                'headline': obj.headline,
+                'xCoords': obj.xCoords,
+                'yCoords': obj.yCoords,
+                'description': obj.description,
+                'link': obj.link_to_map,
+                'image': obj.image,
+                'typeOfRoute': obj.typeOfRoute
+            }
+            for obj in TouristObject.objects.all().exclude(typeOfRoute__istartswith='_')
         ]
         context['ekb'] = [
             {
@@ -30,6 +45,8 @@ class SomeView(TemplateView):
                 'yCoords': obj.yCoords,
                 'description': obj.description,
                 'link': obj.link_to_map,
+                'image':obj.image,
+                'typeOfRoute': obj.typeOfRoute
             }
             for obj in TouristObject.objects.all().filter(location = 'город')
         ]
@@ -40,7 +57,9 @@ class SomeView(TemplateView):
                 'xCoords': obj.xCoords,
                 'yCoords': obj.yCoords,
                 'description': obj.description,
+                'image': obj.image,
                 'link': obj.link_to_map,
+                'typeOfRoute': obj.typeOfRoute
             }
             for obj in TouristObject.objects.all().filter(location = 'область')
         ]
@@ -51,7 +70,9 @@ class SomeView(TemplateView):
                 'xCoords': obj.xCoords,
                 'yCoords': obj.yCoords,
                 'description': obj.description,
+                'image': obj.image,
                 'link': obj.link_to_map,
+                'typeOfRoute': obj.typeOfRoute
             }
             for obj in TouristObject.objects.all().filter(difficult = '0')
         ]
@@ -62,10 +83,13 @@ class SomeView(TemplateView):
                 'xCoords': obj.xCoords,
                 'yCoords': obj.yCoords,
                 'description': obj.description,
+                'image': obj.image,
                 'link': obj.link_to_map,
+                'typeOfRoute': obj.typeOfRoute
             }
             for obj in TouristObject.objects.all().filter(difficult='2')
         ]
+
         context['publicT'] = [
             {
                 'id': obj.id,
@@ -73,7 +97,9 @@ class SomeView(TemplateView):
                 'xCoords': obj.xCoords,
                 'yCoords': obj.yCoords,
                 'description': obj.description,
+                'image': obj.image,
                 'link': obj.link_to_map,
+                'typeOfRoute': obj.typeOfRoute
             }
             for obj in TouristObject.objects.all().filter(difficult='1')
         ]

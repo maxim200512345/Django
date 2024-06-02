@@ -307,6 +307,12 @@ body{
   grid-column: 8/8;
 }
 
+.button-category:hover {
+ background-color: #D7D7D7; /* Цвет фона при наведении */
+ transition: 0.5s; /* Время перехода */
+}
+
+
 /* Активированная кнопка город и обл ====================*/
 .button-city-activ{
   background: black;
@@ -317,14 +323,32 @@ body{
   filter: drop-shadow(0px 0px 250px rgba(0, 0, 0, 0.75));
 }
 
+.button-city:hover {
+ background-color: #000000; /* Цвет фона при наведении */
+ transition: 0.5s; /* Время перехода */
+}
+
+.button-category:hover {
+ background-color: #000000; /* Цвет фона при наведении */
+ transition: 0.5s; /* Время перехода */
+}
+
+
 .city-activ-name{
   font-size: 30px;
   font-weight: 400;
   color: black;
+    background-color: #D7D7D7;
+
 }
 
 .Ekb{
   color: black;
+  background-color: #D7D7D7;
+}
+
+.Ekb:hover{
+  background-color: #D7D7D7;
 }
 
 .Obl{
@@ -346,6 +370,11 @@ body{
 
   grid-row: 5/6;
   grid-column: 8/8;
+}
+
+.button-city:hover {
+ background-color: #D7D7D7; /* Цвет фона при наведении */
+ transition: 0.5s; /* Время перехода */
 }
 
 /* Активированная кнопка готовые маршруты ====================*/
@@ -384,6 +413,9 @@ a{
   grid-column: 8/8;
 }
 
+.small-boutton{
+    color: black;
+}
 /* build ====================*/
 
 
@@ -742,6 +774,35 @@ a{
     grid-template-columns: repeat(3, 115fr);
     grid-template-rows: repeat(14, 40px);
   }
+}
+
+a {
+  color: #FFFFFF; /* blue colors for links too */
+  text-decoration: none;
+}
+
+
+.balloon {
+  margin: 10px;
+  width: 90%;
+  border: 5px solid #FFFFFF;
+  border-radius: 10px;
+  background: #A2A2A2;
+}
+
+.help{
+  padding: 10px;
+  background-color: #FFFFFF;
+}
+
+.dis{
+  padding: 20px;
+  color: #FFFFFF;
+}
+
+.img-viget {
+  width: 100%;
+  margin-top: 10px;
 }
 
 /* media smartfon ====================*/

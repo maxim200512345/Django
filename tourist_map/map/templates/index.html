@@ -17,19 +17,6 @@
 
 <script src="https://api-maps.yandex.ru/2.1/?apikey=ваш API-ключ&lang=ru_RU"></script>
 <script>
-	function makePlaceMark(name, desc, link){
-		  var placemark = new ymaps.Placemark([x,y], {
-			balloonContentHeader: name,
-			balloonContentBody: desc,
-			balloonContentFooter : link,
-		}, {
-			iconLayout: 'default#image',
-			iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
-			iconImageSize: [100, 100],
-			iconImageOffset: [-19, -44]
-		});
-		  map.geoObjects.add(placemark);
-	  }
     function init(){
    		let map = new ymaps.Map('map', {
         center: [56.838011, 60.597474],
@@ -44,10 +31,8 @@
 	map.controls.remove('zoomControl'); // удаляем контрол зуммирования
 	map.controls.remove('rulerControl'); // удаляем контрол правил
 
-
-
 	var points = [{% for item in all  %}
-		"{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}}",
+		"{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}} + {{item.typeOfRoute}}",
 		{% endfor %}]
 		points.forEach(item => {
 			var divided = item.split('+')
@@ -58,10 +43,10 @@
 				  var imageLink = divided[5]
 				  var counter = 0;
 				  BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
-            '<div>' +
-                '<b><div class="balloon-head balloon">$[properties.balloonHeader]</div></b>' +
-                '<img src="$[properties.image]" width="300px" height="300px" />'+
-                '<div class="balloon-body balloon">$[properties.balloonContent]</div>' +
+            '<div class="widget">' +
+                '<b><div class="balloon-head balloon help">$[properties.balloonHeader]</div></b>' +
+                '<img class="img-viget" src="$[properties.image]" width="300px" height="300px" />'+
+                '<div class="balloon-body balloon dis">$[properties.balloonContent]</div>' +
                 '<button id="counter-button">подробнее </button>' +
             '</div>', {
             build: function () {
@@ -76,19 +61,15 @@
 				  var placemark = new ymaps.Placemark([x, y], {
 						balloonHeader: name,
 						balloonContent: description,
-						balloonMinWidth: 500,
-						balloonMinHeight: 500,
 						image: imageLink
 					}, {
 						balloonContentLayout: BalloonContentLayout,
-
-						// Запретим замену обычного балуна на балун-панель.
-						// Если не указывать эту опцию, на картах маленького размера откроется балун-панель.
 					});
 				  map.geoObjects.add(placemark);
 				  placemark.events.add('click', (e) => {
 					  var a = document.getElementById("button-build");
 					  var sub = "amp;"
+					  var currentRoute = divided[1]
 					  var link = divided[0].replaceAll(sub, "")
 					  a.href = link
 					  var route =  [
@@ -105,17 +86,28 @@
 					var options = {
 						draggable: false,
 						strokeColor: '#ff0000',
-						strokeWidth: 1
+						strokeWidth: 4
 
 					}
+					var type = divided[6]
 					for (var i = 0; i < points.length; i++){
+
 						var point = points[i].split("+");
-						var coords = [point[3], point[4]]
-						geometry.push(coords);
+						if (point[6] === type){
+							var coords = [point[3], point[4]]
+							geometry.push(coords);
+						}
 					}
 					polyline = new ymaps.Polyline(geometry, properties, options);
 					map.geoObjects.add(polyline);
 					})
+					  placemark.balloon.events.add('close',() => {
+						map.geoObjects.each(function (geoObject) {
+						if (geoObject instanceof ymaps.Polyline) {
+							map.geoObjects.remove(geoObject);
+						}
+						});
+				  })
 		})
 
       window.selectChanged = function(theSelect) {
@@ -125,25 +117,37 @@
 			var y = parseFloat(selectedValue[4]);
 
 			map.setCenter([x,y]);
-			//сюда любой html, css код сувать можно, работа фронта,
-			var placemark = new ymaps.Placemark([x,y], {
-				balloonContentHeader: selectedValue[2],
-				balloonContentBody: selectedValue[1],
-			}, {
-				iconLayout: 'default#image',
-				iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
-				iconImageSize: [15, 15],
-				iconImageOffset: [-15,-40]
+			BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
+				'<div class="widget">' +
+					'<b><div class="balloon-head balloon help">$[properties.balloonHeader]</div></b>' +
+					'<img class="img-viget" src="$[properties.image]" width="300px" height="300px" />'+
+					'<div class="balloon-body balloon dis">$[properties.balloonContent]</div>' +
+					'<button id="counter-button">подробнее </button>' +
+				'</div>', {
+				build: function () {
+					BalloonContentLayout.superclass.build.call(this);
+				},
+				clear: function () {
+
+					BalloonContentLayout.superclass.clear.call(this);
+				}
+			});
+			var placemark = new ymaps.Placemark([x, y], {
+				balloonHeader: selectedValue[2],
+				balloonContent: selectedValue[1],
+				image: selectedValue[5]
+				}, {
+				balloonContentLayout: BalloonContentLayout,
 			});
 			map.geoObjects.add(placemark);
 			placemark.events.add('click', (e) => {
 					  var a = document.getElementById("button-build");
 					  var sub = "amp;"
-					  var link = divided[0].replaceAll(sub, "")
+					  var link = selectedValue[0].replaceAll(sub, "")
 					  a.href = link
 					  var route =  [
 						{% for value in all  %}
-						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}}",
+						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}}+{{value.image}}+{{value.typeOfRoute}}",
 						{% endfor %}
 				  	  ];
 
@@ -155,14 +159,19 @@
 					var options = {
 						draggable: false,
 						strokeColor: '#ff0000',
-						strokeWidth: 1
+						strokeWidth: 4
 
 					}
-					for (var i = 0; i < points.length; i++){
-						var point = points[i].split("+");
-						var coords = [point[3], point[4]]
-						console.log(coords)
-						geometry.push(coords);
+					console.log(route[0].split("+")[6])
+					console.log(selectedValue[6])
+					for (var i = 0; i < route.length; i++){
+						var point = route[i].split("+");
+						if ((selectedValue[6] === point[6].slice(1)) || (selectedValue[6] === point[6])){
+							var coords = [point[3], point[4]]
+							console.log(coords)
+							geometry.push(coords);
+						}
+
 					}
 					polyline = new ymaps.Polyline(geometry, properties, options);
 					map.geoObjects.add(polyline);
@@ -177,7 +186,7 @@
 		  {
 			  var data = [
 				{% for item in ekb  %}
-				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
+				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}} + {{item.typeOfRoute}}",
 			  	{% endfor %}
 			  ];
 			  data.forEach(item => {
@@ -186,15 +195,30 @@
 				  var description = divided[2]
 				  var x = parseFloat(divided[3])
 				  var y = parseFloat(divided[4])
-				  var placemark = new ymaps.Placemark([x,y], {
-					  balloonContentHeader: name,
-					  balloonContentBody: description,
-				  }, {
-					  iconLayout: 'default#image',
-					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
-					  iconImageSize: [15, 15],
-					  iconImageOffset: [-15,-40]
+				  var imageLink = divided[5]
+				  BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
+						'<div class="widget">' +
+							'<b><div class="balloon-head balloon help">$[properties.balloonHeader]</div></b>' +
+							'<img class="img-viget" src="$[properties.image]" width="300px" height="300px" />'+
+							'<div class="balloon-body balloon dis">$[properties.balloonContent]</div>' +
+							'<button id="counter-button">подробнее </button>' +
+						'</div>', {
+						build: function () {
+							BalloonContentLayout.superclass.build.call(this);
+
+						},
+						clear: function () {
+
+							BalloonContentLayout.superclass.clear.call(this);
+						}
 				  });
+				  var placemark = new ymaps.Placemark([x, y], {
+						balloonHeader: name,
+						balloonContent: description,
+						image: imageLink
+					}, {
+						balloonContentLayout: BalloonContentLayout,
+					});
 				  map.geoObjects.add(placemark);
 				  placemark.events.add('click', (e) => {
 					  var a = document.getElementById("button-build");
@@ -202,8 +226,8 @@
 					  var link = divided[0].replaceAll(sub, "")
 					  a.href = link
 					  var route =  [
-						{% for value in all  %}
-						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}}",
+						{% for value in ekb  %}
+						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}} + {{value.typeOfRoute}}",
 						{% endfor %}
 				  	  ];
 
@@ -215,26 +239,27 @@
 					var options = {
 						draggable: false,
 						strokeColor: '#ff0000',
-						strokeWidth: 1
+						strokeWidth: 4
 
 					}
-					for (var i = 0; i < points.length; i++){
-						var point = points[i].split("+");
-						var coords = [point[3], point[4]]
-						console.log(coords)
-						geometry.push(coords);
+					for (var i = 0; i < route.length; i++){
+						var point = route[i].split("+");
+						console.log(point[5])
+						if (point[5] === type){
+							var coords = [point[3], point[4]]
+							geometry.push(coords);
+						}
 					}
 					polyline = new ymaps.Polyline(geometry, properties, options);
 					map.geoObjects.add(polyline);
 					})
 			  })
-
 		  }
 		  else{
 			  map.geoObjects.removeAll()
 			  data = [
 				{% for item in district  %}
-				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
+				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}} + {{item.typeOfRoute}}",
 			  	{% endfor %}
 			  ];
 			  data.forEach(item => {
@@ -243,17 +268,64 @@
 				  var description = divided[2]
 				  var x = parseFloat(divided[3])
 				  var y = parseFloat(divided[4])
-				  var placemark = new ymaps.Placemark([x,y], {
-					  balloonContentHeader: name,
-					  balloonContentBody: description,
-				  }, {
-					  iconLayout: 'default#image',
-					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
-					  iconImageSize: [15, 15],
-					  iconImageOffset: [-15,-40]
-				  });
-				  map.geoObjects.add(placemark);
+				  var imageLink = divided[5];
+				  BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
+						'<div class="widget">' +
+							'<b><div class="balloon-head balloon help">$[properties.balloonHeader]</div></b>' +
+							'<img class="img-viget" src="$[properties.image]" width="300px" height="300px" />'+
+							'<div class="balloon-body balloon dis">$[properties.balloonContent]</div>' +
+							'<button id="counter-button">подробнее </button>' +
+						'</div>', {
+						build: function () {
+							BalloonContentLayout.superclass.build.call(this);
 
+						},
+						clear: function () {
+
+							BalloonContentLayout.superclass.clear.call(this);
+						}
+				  });
+				  var placemark = new ymaps.Placemark([x, y], {
+						balloonHeader: name,
+						balloonContent: description,
+						image: imageLink
+					}, {
+						balloonContentLayout: BalloonContentLayout,
+					});
+				  map.geoObjects.add(placemark);
+				  placemark.events.add('click', (e) => {
+					  var a = document.getElementById("button-build");
+					  var sub = "amp;"
+					  var link = divided[0].replaceAll(sub, "")
+					  a.href = link
+					  var route =  [
+						{% for value in district  %}
+						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}} + {{value.typeOfRoute}}",
+						{% endfor %}
+				  	  ];
+
+					  var geometry = []
+
+					var properties = {
+						hintContent: "Ломаная линия"
+					}
+					var options = {
+						draggable: false,
+						strokeColor: '#ff0000',
+						strokeWidth: 4
+
+					}
+					for (var i = 0; i < route.length; i++){
+						var point = route[i].split("+");
+						if (point[5] === divided[6]){
+							var coords = [point[3], point[4]]
+							geometry.push(coords);
+						}
+
+					}
+					polyline = new ymaps.Polyline(geometry, properties, options);
+					map.geoObjects.add(polyline);
+					})
 			  })
 		  }
 	  }
@@ -264,7 +336,7 @@
 			  map.geoObjects.removeAll()
 			  data = [
 				{% for item in walk  %}
-				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
+				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}} + {{item.typeOfRoute}}",
 			  	{% endfor %}
 			  ];
 			  data.forEach(item => {
@@ -273,15 +345,31 @@
 				  var description = divided[2]
 				  var x = parseFloat(divided[3])
 				  var y = parseFloat(divided[4])
-				  var placemark = new ymaps.Placemark([x,y], {
-					  balloonContentHeader: name,
-					  balloonContentBody: description,
-				  }, {
-					  iconLayout: 'default#image',
-					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
-					  iconImageSize: [15, 15],
-					  iconImageOffset: [-15,-40]
+				  var imageLink = divided[5]
+				  BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
+						'<div class="widget">' +
+							'<b><div class="balloon-head balloon help">$[properties.balloonHeader]</div></b>' +
+							'<img class="img-viget" src="$[properties.image]" width="300px" height="300px" />'+
+							'<div class="balloon-body balloon dis">$[properties.balloonContent]</div>' +
+							'<button id="counter-button">подробнее </button>' +
+						'</div>', {
+						build: function () {
+							BalloonContentLayout.superclass.build.call(this);
+
+						},
+						clear: function () {
+
+							BalloonContentLayout.superclass.clear.call(this);
+						}
 				  });
+				  var placemark = new ymaps.Placemark([x, y], {
+						balloonHeader: name,
+						balloonContent: description,
+						image: imageLink
+					}, {
+						balloonContentLayout: BalloonContentLayout,
+					});
+
 				  map.geoObjects.add(placemark);
 				  placemark.events.add('click', (e) => {
 					  var a = document.getElementById("button-build");
@@ -289,8 +377,8 @@
 					  var link = divided[0].replaceAll(sub, "")
 					  a.href = link
 					  var route =  [
-						{% for value in all  %}
-						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}}",
+						{% for value in walk  %}
+						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}} + {{value.typeOfRoute}}",
 						{% endfor %}
 				  	  ];
 
@@ -302,14 +390,15 @@
 					var options = {
 						draggable: false,
 						strokeColor: '#ff0000',
-						strokeWidth: 1
+						strokeWidth: 4
 
 					}
-					for (var i = 0; i < points.length; i++){
-						var point = points[i].split("+");
-						var coords = [point[3], point[4]]
-						console.log(coords)
-						geometry.push(coords);
+					for (var i = 0; i < route.length; i++){
+						var point = route[i].split("+");
+						if (point[5] === divided[6]){
+							var coords = [point[3], point[4]]
+							geometry.push(coords);
+						}
 					}
 					polyline = new ymaps.Polyline(geometry, properties, options);
 					map.geoObjects.add(polyline);
@@ -320,7 +409,7 @@
 				map.geoObjects.removeAll()
 			  	data = [
 					{% for item in car  %}
-					  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
+					  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}} + {{item.typeOfRoute}}",
 					{% endfor %}
 				  ];
 				data.forEach(item => {
@@ -329,15 +418,32 @@
 				  var description = divided[2]
 				  var x = parseFloat(divided[3])
 				  var y = parseFloat(divided[4])
-				  var placemark = new ymaps.Placemark([x,y], {
-					  balloonContentHeader: name,
-					  balloonContentBody: description,
-				  }, {
-					  iconLayout: 'default#image',
-					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
-					  iconImageSize: [15, 15],
-					  iconImageOffset: [-15,-40]
+				  var imageLink = divided[5]
+				  BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
+						'<div class="widget">' +
+							'<b><div class="balloon-head balloon help">$[properties.balloonHeader]</div></b>' +
+							'<img class="img-viget" src="$[properties.image]" width="300px" height="300px" />'+
+							'<div class="balloon-body balloon dis">$[properties.balloonContent]</div>' +
+							'<button id="counter-button">подробнее </button>' +
+						'</div>', {
+						build: function () {
+							BalloonContentLayout.superclass.build.call(this);
+
+						},
+						clear: function () {
+							BalloonContentLayout.superclass.clear.call(this);
+						}
 				  });
+				  var placemark = new ymaps.Placemark([x, y], {
+						balloonHeader: name,
+						balloonContent: description,
+						image: imageLink
+					}, {
+						balloonContentLayout: BalloonContentLayout,
+
+						// Запретим замену обычного балуна на балун-панель.
+						// Если не указывать эту опцию, на картах маленького размера откроется балун-панель.
+					});
 				  map.geoObjects.add(placemark);
 				  placemark.events.add('click', (e) => {
 					  var a = document.getElementById("button-build");
@@ -345,8 +451,8 @@
 					  var link = divided[0].replaceAll(sub, "")
 					  a.href = link
 					  var route =  [
-						{% for value in all  %}
-						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}}",
+						{% for value in car  %}
+						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}} + {{value.typeOfRoute}}",
 						{% endfor %}
 				  	  ];
 
@@ -358,14 +464,15 @@
 					var options = {
 						draggable: false,
 						strokeColor: '#ff0000',
-						strokeWidth: 1
+						strokeWidth: 4
 
 					}
-					for (var i = 0; i < points.length; i++){
-						var point = points[i].split("+");
+					for (var i = 0; i < route.length; i++){
+						var point = route[i].split("+");
+						if (point[5] === divided[6]){
 						var coords = [point[3], point[4]]
-						console.log(coords)
 						geometry.push(coords);
+						}
 					}
 					polyline = new ymaps.Polyline(geometry, properties, options);
 					map.geoObjects.add(polyline);
@@ -376,7 +483,7 @@
 				map.geoObjects.removeAll()
 			  	data = [
 					{% for item in publicT  %}
-					  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}}",
+					  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}} + {{item.typeOfRoute}}",
 					{% endfor %}
 				  ];
 				data.forEach(item => {
@@ -385,15 +492,30 @@
 				  var description = divided[2]
 				  var x = parseFloat(divided[3])
 				  var y = parseFloat(divided[4])
-				  var placemark = new ymaps.Placemark([x,y], {
-					  balloonContentHeader: name,
-					  balloonContentBody: description,
-				  }, {
-					  iconLayout: 'default#image',
-					  iconImageHref: 'https://cdn-icons-png.flaticon.com/512/9805/9805283.png',
-					  iconImageSize: [15, 15],
-					  iconImageOffset: [-15,-40]
+				  var imageLink = divided[5]
+				  BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
+						'<div class="widget">' +
+							'<b><div class="balloon-head balloon help">$[properties.balloonHeader]</div></b>' +
+							'<img class="img-viget" src="$[properties.image]" width="300px" height="300px" />'+
+							'<div class="balloon-body balloon dis">$[properties.balloonContent]</div>' +
+							'<button id="counter-button">подробнее </button>' +
+						'</div>', {
+						build: function () {
+							BalloonContentLayout.superclass.build.call(this);
+
+						},
+						clear: function () {
+
+							BalloonContentLayout.superclass.clear.call(this);
+						}
 				  });
+				  var placemark = new ymaps.Placemark([x, y], {
+						balloonHeader: name,
+						balloonContent: description,
+						image: imageLink
+					}, {
+						balloonContentLayout: BalloonContentLayout,
+					});
 				  map.geoObjects.add(placemark);
 				  placemark.events.add('click', (e) => {
 					  var a = document.getElementById("button-build");
@@ -401,8 +523,8 @@
 					  var link = divided[0].replaceAll(sub, "")
 					  a.href = link
 					  var route =  [
-						{% for value in all  %}
-						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}}",
+						{% for value in publicT  %}
+						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}} + {{value.typeOfRoute}}",
 						{% endfor %}
 				  	  ];
 
@@ -414,14 +536,16 @@
 					var options = {
 						draggable: false,
 						strokeColor: '#ff0000',
-						strokeWidth: 1
+						strokeWidth: 4
 
 					}
-					for (var i = 0; i < points.length; i++){
-						var point = points[i].split("+");
+					for (var i = 0; i < route.length; i++){
+						var point = route[i].split("+");
+						if (point[5] === divided[6]){
 						var coords = [point[3], point[4]]
 						console.log(coords)
 						geometry.push(coords);
+						}
 					}
 					polyline = new ymaps.Polyline(geometry, properties, options);
 					map.geoObjects.add(polyline);
@@ -429,7 +553,6 @@
 			  })
 		  }
 	  }
-
     }
     ymaps.ready(init);
 
@@ -501,21 +624,21 @@
 					</select>
 
 				<select id="city_selector" class="button-city"  onkeyup="this.onchange()" onchange="cityChanged(this);">
-						<option selected disabled="true" class="city-activ-name">город и область</option>
+						<option selected disabled="true" class="city-activ-name">Город и область</option>
 						<option value="0" class="Ekb">Екатеринбург</option>
 						<option value="1" class="Obl">Свердловская область</option>
 					</select>
 
 				<select id="selector" class="button-ready" onkeyup="this.onchange();"  onchange="selectChanged(this);">
-						<option selected disabled="true" class="ready-activ-name">готовые маршруты</option>
-						{% for result in all %}
-						<option value="{{result.link}}+{{result.description}}+{{result.headline}}+{{result.xCoords}}+{{result.yCoords}}">{{result.headline}}</option>
+						<option selected disabled="true" class="ready-activ-name">Готовые маршруты</option>
+						{% for result in routes %}
+						<option value="{{result.link}}+{{result.description}}+{{result.headline}}+{{result.xCoords}}+{{result.yCoords}}+{{result.image}}+{{result.typeOfRoute}}" class="Ekb">{{result.typeOfRoute}}</option>
 						{% endfor %}
 					</select>
 
-				<a class="button-build" id="button-build">
-					ПОСТРОИТЬ
-				</a>
+				<button class="button-build">
+					<a id="button-build">ПОСТРОИТЬ</a>
+				</button>
 			</div>
 		</div>
 	</div>
