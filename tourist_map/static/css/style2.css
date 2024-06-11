@@ -1,0 +1,235 @@
+/* Подключение шрифтов */
+/* montserrat-regular - cyrillic_latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/montserrat-v26-cyrillic_latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* montserrat-600 - cyrillic_latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../fonts/montserrat-v26-cyrillic_latin-600.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* montserrat-700 - cyrillic_latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/montserrat-v26-cyrillic_latin-700.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* Подключение шрифтов конец */
+
+body{
+  margin: 0;
+  font-family: 'Montserrat';
+  font-size: 30px;
+  color: #1D1D1D;
+}
+
+.wrapper{
+  width: 85%;
+  margin: 0 auto;
+}
+
+.h1{
+  margin: 0;
+}
+
+.p1{
+  margin: 0;
+}
+
+
+/* Header ===================*/
+
+.header{
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  height: 150px;
+  background-color: black;
+}
+
+.header_inner{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 4% 0;
+}
+
+.nav{
+  display: flex;
+}
+
+.nav_link{
+  font-weight: 400;
+  color: white;
+  text-decoration: none;
+
+  transition: opacity .1s
+  linear;
+}
+
+.nav_link:hover, .header-link:focus, .header-link:active{
+    opacity: .75;
+    cursor: default;
+}
+
+
+/* Header ===================*/
+
+.intro{
+  background-color: black;
+}
+
+.intro_title{
+  padding-top: 125px;
+  font-size: 120px;
+  font-weight: 700;
+  color: white;
+  margin-left: -10px;
+}
+
+.ocantovka{
+  display: flex;
+  justify-content: center;
+  padding-bottom: 140px;
+}
+
+.img{
+  max-width: 100vh;
+}
+
+.widget {
+  display: flex;
+  justify-content: center;
+  width: 84%;
+  border: 5px solid #FFFFFF;
+  border-radius: 10px;
+  background: #A2A2A2;
+  margin-top: 220px;
+  margin-left: 8%;
+  height: 700px;
+  margin-bottom: 200px;
+}
+
+.scrollable-description {
+  max-height: 100%;
+  max-width: 100%;
+  overflow-y: auto;
+}
+
+.contacts{
+  background-color: black;
+}
+
+.footer_inner{
+  display: flex;
+  justify-content: center;
+  padding: 4% 0;
+  grid-gap: 200px;
+}
+
+.footer_text{
+  color: white;
+  margin-top: 0px;
+  margin-bottom: 1%;
+  margin-left: 3%;
+}
+
+.block_inner{
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 1300px){
+  .footer_inner{
+    grid-gap: 100px;
+  }
+}
+
+
+@media (max-width: 1100px){
+  .footer_inner{
+    grid-gap: 50px;
+  }
+
+  .intro_title{
+    font-size: 60px;
+    font-weight: 700;
+  }
+
+  .nav_link{
+    font-size: 25px;
+  }
+
+  .footer_text{
+    font-size: 25px;
+  }
+}
+
+@media (max-width: 900px){
+  .nav_link{
+    font-size: 15px;
+  }
+
+  .footer_text{
+    font-size: 15px;
+  }
+
+  .footer_image{
+    transform: scale(0.55);
+  }
+}
+
+@media (max-width: 670px){
+  .footer_inner{
+    grid-gap: 5px;
+    width: 90%;
+  }
+
+  .footer_text{
+    margin-left: 1%;
+  }
+
+  .block_inner:last-child{
+    width: 55px;
+    margin-right: 2px;
+  }
+}
+
+@media (max-width: 550px){
+  .footer_inner{
+    grid-gap: 0px;
+    width: 85%;
+  }
+
+  .footer_text{
+    margin-left: -25px;
+  }
+
+  .footer_image{
+    transform: scale(0.35);
+  }
+
+  .footer_text{
+    font-size: 10px;
+  }
+
+  .block_inner:last-child{
+    width: 36px;
+    margin-right: 30px;
+  }
+
+  .header_image{
+    transform: scale(0.65);
+  }
+}

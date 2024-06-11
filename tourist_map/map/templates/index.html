@@ -47,7 +47,7 @@
                 '<b><div class="balloon-head balloon help">$[properties.balloonHeader]</div></b>' +
                 '<img class="img-viget" src="$[properties.image]" width="300px" height="300px" />'+
                 '<div class="balloon-body balloon dis">$[properties.balloonContent]</div>' +
-                '<button id="counter-button">подробнее </button>' +
+                '<a href="{% url 'details' %}"><button id="counter-button">подробнее </button></a>' +
             '</div>', {
             build: function () {
                 BalloonContentLayout.superclass.build.call(this);
@@ -561,7 +561,7 @@
 		<div class="wrapper">
 			<div class="header_inner">
 				<div class="header_logo">
-					<img src="img/Logo.svg" alt="">
+					<img src="{% static 'img/svg/Logo.svg' %}" alt="">
 				</div>
 
 				<nav class="nav">

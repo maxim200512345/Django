@@ -7,5 +7,6 @@ from map import views
 from map.views import SomeView
 
 urlpatterns = [
-    path('', SomeView.as_view(template_name='index.html')),
+    path('', SomeView.as_view(template_name='index.html'), name='main'),
+    path('details/', views.details, name='details')
 ]

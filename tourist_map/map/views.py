@@ -6,6 +6,10 @@ from .models import TouristObject
 from .queryesToSql import GetAllDataFromObject
 
 
+def details(request):
+    return render(request, 'details.html')
+
+
 class SomeView(TemplateView):
     template_name = 'index.html'
     def get_context_data(self, **kwargs):
