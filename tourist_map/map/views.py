@@ -6,8 +6,10 @@ from .models import TouristObject
 from .queryesToSql import GetAllDataFromObject
 
 
-def details(request):
-    return render(request, 'details.html')
+def details(request, id):
+    object = TouristObject.objects.get(id=id)
+
+    return render(request, 'details.html', {'object' : object})
 
 
 class SomeView(TemplateView):

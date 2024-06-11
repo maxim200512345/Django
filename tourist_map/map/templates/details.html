@@ -25,10 +25,10 @@
   <section class="intro">
     <div class="wrapper">
       <h1 class="intro_title">
-        Название
+        {{ object.headline }}
       </h1>
       <div class="ocantovka">
-        <img src="{% static 'img/glush.jpg' %}" class="img_ocan" style="max-width: 95%;">
+        <img src="{{ object.image }}" class="img_ocan" style="max-width: 95%;">
       </div>
     </div>
   </section>
@@ -36,7 +36,7 @@
   <section class="text">
     <div class="widget">
       <div class="scrollable-description">
-          <p class="dis">Описание</p>
+          <p class="dis">{{ object.full_description }}</p>
       </div>
     </div>
   </section>

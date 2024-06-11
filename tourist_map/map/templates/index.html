@@ -17,6 +17,9 @@
 
 <script src="https://api-maps.yandex.ru/2.1/?apikey=ваш API-ключ&lang=ru_RU"></script>
 <script>
+	function openPage(id){
+		window.location.href = '/details/' + id + '/';
+	}
     function init(){
    		let map = new ymaps.Map('map', {
         center: [56.838011, 60.597474],
@@ -32,7 +35,7 @@
 	map.controls.remove('rulerControl'); // удаляем контрол правил
 
 	var points = [{% for item in all  %}
-		"{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}} + {{item.typeOfRoute}}",
+		"{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}} + {{item.typeOfRoute}} + {{item.id}}",
 		{% endfor %}]
 		points.forEach(item => {
 			var divided = item.split('+')
@@ -41,13 +44,14 @@
 				  var x = parseFloat(divided[3])
 				  var y = parseFloat(divided[4])
 				  var imageLink = divided[5]
+				  var objectId = divided[6]
 				  var counter = 0;
 				  BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
             '<div class="widget">' +
                 '<b><div class="balloon-head balloon help">$[properties.balloonHeader]</div></b>' +
                 '<img class="img-viget" src="$[properties.image]" width="300px" height="300px" />'+
                 '<div class="balloon-body balloon dis">$[properties.balloonContent]</div>' +
-                '<a href="{% url 'details' %}"><button id="counter-button">подробнее </button></a>' +
+                '<button onClick="openPage($[properties.id])">подробнее </button>' +
             '</div>', {
             build: function () {
                 BalloonContentLayout.superclass.build.call(this);
@@ -61,7 +65,8 @@
 				  var placemark = new ymaps.Placemark([x, y], {
 						balloonHeader: name,
 						balloonContent: description,
-						image: imageLink
+						image: imageLink,
+						id: divided[7],
 					}, {
 						balloonContentLayout: BalloonContentLayout,
 					});
@@ -122,7 +127,7 @@
 					'<b><div class="balloon-head balloon help">$[properties.balloonHeader]</div></b>' +
 					'<img class="img-viget" src="$[properties.image]" width="300px" height="300px" />'+
 					'<div class="balloon-body balloon dis">$[properties.balloonContent]</div>' +
-					'<button id="counter-button">подробнее </button>' +
+					'<button onClick="openPage($[properties.id])">подробнее </button>' +
 				'</div>', {
 				build: function () {
 					BalloonContentLayout.superclass.build.call(this);
@@ -135,7 +140,8 @@
 			var placemark = new ymaps.Placemark([x, y], {
 				balloonHeader: selectedValue[2],
 				balloonContent: selectedValue[1],
-				image: selectedValue[5]
+				image: selectedValue[5],
+				id: selectedValue[7],
 				}, {
 				balloonContentLayout: BalloonContentLayout,
 			});
@@ -186,7 +192,7 @@
 		  {
 			  var data = [
 				{% for item in ekb  %}
-				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}} + {{item.typeOfRoute}}",
+				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}} + {{item.typeOfRoute}} + {{item.id}}",
 			  	{% endfor %}
 			  ];
 			  data.forEach(item => {
@@ -196,12 +202,13 @@
 				  var x = parseFloat(divided[3])
 				  var y = parseFloat(divided[4])
 				  var imageLink = divided[5]
+				  var type = divided[6]
 				  BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
 						'<div class="widget">' +
 							'<b><div class="balloon-head balloon help">$[properties.balloonHeader]</div></b>' +
 							'<img class="img-viget" src="$[properties.image]" width="300px" height="300px" />'+
 							'<div class="balloon-body balloon dis">$[properties.balloonContent]</div>' +
-							'<button id="counter-button">подробнее </button>' +
+							'<button onClick="openPage($[properties.id])">подробнее </button>' +
 						'</div>', {
 						build: function () {
 							BalloonContentLayout.superclass.build.call(this);
@@ -215,7 +222,9 @@
 				  var placemark = new ymaps.Placemark([x, y], {
 						balloonHeader: name,
 						balloonContent: description,
-						image: imageLink
+						image: imageLink,
+						id: divided[7],
+
 					}, {
 						balloonContentLayout: BalloonContentLayout,
 					});
@@ -259,7 +268,7 @@
 			  map.geoObjects.removeAll()
 			  data = [
 				{% for item in district  %}
-				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}} + {{item.typeOfRoute}}",
+				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}} + {{item.typeOfRoute}} + {{item.id}}",
 			  	{% endfor %}
 			  ];
 			  data.forEach(item => {
@@ -274,7 +283,7 @@
 							'<b><div class="balloon-head balloon help">$[properties.balloonHeader]</div></b>' +
 							'<img class="img-viget" src="$[properties.image]" width="300px" height="300px" />'+
 							'<div class="balloon-body balloon dis">$[properties.balloonContent]</div>' +
-							'<button id="counter-button">подробнее </button>' +
+							'<button onClick="openPage($[properties.id])">подробнее </button>' +
 						'</div>', {
 						build: function () {
 							BalloonContentLayout.superclass.build.call(this);
@@ -288,7 +297,8 @@
 				  var placemark = new ymaps.Placemark([x, y], {
 						balloonHeader: name,
 						balloonContent: description,
-						image: imageLink
+						image: imageLink,
+						id: divided[7]
 					}, {
 						balloonContentLayout: BalloonContentLayout,
 					});
@@ -336,7 +346,7 @@
 			  map.geoObjects.removeAll()
 			  data = [
 				{% for item in walk  %}
-				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}} + {{item.typeOfRoute}}",
+				  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}} + {{item.typeOfRoute}} + {{item.id}}",
 			  	{% endfor %}
 			  ];
 			  data.forEach(item => {
@@ -351,7 +361,7 @@
 							'<b><div class="balloon-head balloon help">$[properties.balloonHeader]</div></b>' +
 							'<img class="img-viget" src="$[properties.image]" width="300px" height="300px" />'+
 							'<div class="balloon-body balloon dis">$[properties.balloonContent]</div>' +
-							'<button id="counter-button">подробнее </button>' +
+							'<button onClick="openPage($[properties.id])">подробнее </button>' +
 						'</div>', {
 						build: function () {
 							BalloonContentLayout.superclass.build.call(this);
@@ -365,7 +375,8 @@
 				  var placemark = new ymaps.Placemark([x, y], {
 						balloonHeader: name,
 						balloonContent: description,
-						image: imageLink
+						image: imageLink,
+						id: divided[7]
 					}, {
 						balloonContentLayout: BalloonContentLayout,
 					});
@@ -409,7 +420,7 @@
 				map.geoObjects.removeAll()
 			  	data = [
 					{% for item in car  %}
-					  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}} + {{item.typeOfRoute}}",
+					  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}} + {{item.typeOfRoute}} + {{item.id}}",
 					{% endfor %}
 				  ];
 				data.forEach(item => {
@@ -424,7 +435,7 @@
 							'<b><div class="balloon-head balloon help">$[properties.balloonHeader]</div></b>' +
 							'<img class="img-viget" src="$[properties.image]" width="300px" height="300px" />'+
 							'<div class="balloon-body balloon dis">$[properties.balloonContent]</div>' +
-							'<button id="counter-button">подробнее </button>' +
+							'<button onClick="openPage($[properties.id])">подробнее </button>' +
 						'</div>', {
 						build: function () {
 							BalloonContentLayout.superclass.build.call(this);
@@ -437,7 +448,8 @@
 				  var placemark = new ymaps.Placemark([x, y], {
 						balloonHeader: name,
 						balloonContent: description,
-						image: imageLink
+						image: imageLink,
+						id: divided[7]
 					}, {
 						balloonContentLayout: BalloonContentLayout,
 
@@ -483,7 +495,7 @@
 				map.geoObjects.removeAll()
 			  	data = [
 					{% for item in publicT  %}
-					  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}} + {{item.typeOfRoute}}",
+					  "{{item.link}}+{{item.headline}}+{{item.description}}+{{item.xCoords}}+{{item.yCoords}} + {{item.image}} + {{item.typeOfRoute}} + {{item.id}}",
 					{% endfor %}
 				  ];
 				data.forEach(item => {
@@ -498,7 +510,7 @@
 							'<b><div class="balloon-head balloon help">$[properties.balloonHeader]</div></b>' +
 							'<img class="img-viget" src="$[properties.image]" width="300px" height="300px" />'+
 							'<div class="balloon-body balloon dis">$[properties.balloonContent]</div>' +
-							'<button id="counter-button">подробнее </button>' +
+							'<button onClick="openPage($[properties.id])">подробнее </button>' +
 						'</div>', {
 						build: function () {
 							BalloonContentLayout.superclass.build.call(this);
@@ -512,7 +524,8 @@
 				  var placemark = new ymaps.Placemark([x, y], {
 						balloonHeader: name,
 						balloonContent: description,
-						image: imageLink
+						image: imageLink,
+						id: divided[7]
 					}, {
 						balloonContentLayout: BalloonContentLayout,
 					});
@@ -638,7 +651,7 @@
 				<select id="selector" class="button-ready" onkeyup="this.onchange();"  onchange="selectChanged(this);">
 						<option selected disabled="true" class="ready-activ-name">Готовые маршруты</option>
 						{% for result in routes %}
-						<option value="{{result.link}}+{{result.description}}+{{result.headline}}+{{result.xCoords}}+{{result.yCoords}}+{{result.image}}+{{result.typeOfRoute}}" class="Ekb">{{result.typeOfRoute}}</option>
+						<option value="{{result.link}}+{{result.description}}+{{result.headline}}+{{result.xCoords}}+{{result.yCoords}}+{{result.image}}+{{result.typeOfRoute}} + {{result.id}}" class="Ekb">{{result.typeOfRoute}}</option>
 						{% endfor %}
 					</select>
 

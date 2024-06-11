@@ -8,5 +8,5 @@ from map.views import SomeView
 
 urlpatterns = [
     path('', SomeView.as_view(template_name='index.html'), name='main'),
-    path('details/', views.details, name='details')
+    path('details/<int:id>/', views.details, name='details')
 ]

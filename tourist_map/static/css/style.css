@@ -87,6 +87,7 @@ body{
 
 .nav_link:hover, .header-link:focus, .header-link:active{
     opacity: .75;
+    cursor: default;
 }
 
 
@@ -364,7 +365,7 @@ body{
 
 .Ekb{
   color: black;
-  background-color: #D7D7D7;
+  background-color: White;
 }
 
 .Ekb:hover{
@@ -373,6 +374,7 @@ body{
 
 .Obl{
   color: black;
+  background-color: White;
 }
 
 /* Активированная кнопка город и обл ====================*/
@@ -862,7 +864,9 @@ a{
   .Maks{
     margin-left: 245px;
   }
-
+  .button-city{
+    margin-left: 5px;
+  }
   .nomer{
     margin-left: 30px;
     font-size: 12px;
@@ -959,7 +963,7 @@ a{
   }
 
   .button-ready{
-    width: 115px;
+    width: 110px;
   }
 
   .button-build{
