@@ -114,9 +114,23 @@
 			var selectedValue = theSelect.options[theSelect.selectedIndex].value.split('+');
 			var x = parseFloat(selectedValue[3]);
 			var y = parseFloat(selectedValue[4]);
-
+			var routesOnConcreteType = [
+				{% for value in all%}
+					"{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}}+{{value.image}}+{{value.typeOfRoute}}",
+				{% endfor %}
+			]
+			var correctData = []
+			for (var i = 0; i < routesOnConcreteType.length; i++){
+				var point = routesOnConcreteType[i].split("+");
+				var sv = "_" + selectedValue[6]
+				if (sv.trim().toString() == point[6].trim().toString()){
+					correctData.push(routesOnConcreteType[i])
+				}
+			}
 			map.setCenter([x,y]);
-			BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
+			correctData.forEach(item => {
+			var sv = item.split("+")
+				BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
 				'<div class="widget">' +
 					'<b><div class="balloon-head balloon help">$[properties.balloonHeader]</div></b>' +
 					'<img class="img-viget" src="$[properties.image]" width="300px" height="300px" />'+
@@ -131,15 +145,44 @@
 					BalloonContentLayout.superclass.clear.call(this);
 				}
 			});
-			var placemark = new ymaps.Placemark([x, y], {
-				balloonHeader: selectedValue[2],
-				balloonContent: selectedValue[1],
-				image: selectedValue[5],
-				id: selectedValue[7],
+			var placemark = new ymaps.Placemark([sv[3], sv[4]], {
+				balloonHeader: sv[2],
+				balloonContent: sv[1],
+				image: sv[5],
+				id: sv[7],
 				}, {
 				balloonContentLayout: BalloonContentLayout,
 			});
 			map.geoObjects.add(placemark);
+			var route =  [
+						{% for value in all  %}
+						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}}+{{value.image}}+{{value.typeOfRoute}}",
+						{% endfor %}
+				  	  ];
+
+					  var geometry = []
+
+					var properties = {
+						hintContent: "Ломаная линия"
+					}
+					var options = {
+						draggable: false,
+						strokeColor: '#ff0000',
+						strokeWidth: 4
+
+					}
+					for (var i = 1; i < route.length; i++){
+						var point = route[i].split("+");
+						var sv = "_" + selectedValue[6]
+						if (sv.trim().toString() == point[6].trim().toString()){
+							var coords = [point[3], point[4]]
+							console.log(coords)
+							geometry.push(coords);
+						}
+					}
+					console.log(geometry)
+					polyline = new ymaps.Polyline(geometry, properties, options);
+					map.geoObjects.add(polyline);
 			placemark.events.add('click', (e) => {
 					  var a = document.getElementById("button-build");
 					  var sub = "amp;"
@@ -162,20 +205,23 @@
 						strokeWidth: 4
 
 					}
-					console.log(route[0].split("+")[6])
-					console.log(selectedValue[6])
-					for (var i = 0; i < route.length; i++){
+					for (var i = 1; i < route.length; i++){
 						var point = route[i].split("+");
-						if ((selectedValue[6] === point[6].slice(1)) || (selectedValue[6] === point[6])){
+						var sv = "_" + selectedValue[6]
+						if (sv.trim().toString() == point[6].trim().toString()){
 							var coords = [point[3], point[4]]
 							console.log(coords)
 							geometry.push(coords);
 						}
-
 					}
+					console.log(geometry)
 					polyline = new ymaps.Polyline(geometry, properties, options);
 					map.geoObjects.add(polyline);
 					})
+			})
+
+
+
       };
 
 	  window.cityChanged = function (theSelect){
