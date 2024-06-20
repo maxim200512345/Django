@@ -96,12 +96,6 @@
 					}
 					var type = divided[6]
 					for (var i = 0; i < points.length; i++){
-
-						var point = points[i].split("+");
-						if (point[6] === type){
-							var coords = [point[3], point[4]]
-							geometry.push(coords);
-						}
 					}
 					polyline = new ymaps.Polyline(geometry, properties, options);
 					map.geoObjects.add(polyline);
@@ -392,7 +386,6 @@
 						  "{{value.link}}+{{value.headline}}+{{value.description}}+{{value.xCoords}}+{{value.yCoords}} + {{value.typeOfRoute}}",
 						{% endfor %}
 				  	  ];
-
 					  var geometry = []
 
 					var properties = {
@@ -406,11 +399,16 @@
 					}
 					for (var i = 0; i < route.length; i++){
 						var point = route[i].split("+");
+						console.log(point[5])
+						console.log(divided[6])
+						console.log(point[5] === divided[6])
 						if (point[5] === divided[6]){
+							console.log("Совпал")
 							var coords = [point[3], point[4]]
 							geometry.push(coords);
 						}
 					}
+					console.log(divided)
 					polyline = new ymaps.Polyline(geometry, properties, options);
 					map.geoObjects.add(polyline);
 					})
@@ -643,10 +641,12 @@
 					</select>
 
 				<select id="city_selector" class="button-city"  onkeyup="this.onchange()" onchange="cityChanged(this);">
-						<option selected disabled="true" class="city-activ-name">Город и область</option>
-						<option value="0" class="Ekb">Екатеринбург</option>
-						<option value="1" class="Obl">Свердловская область</option>
-					</select>
+						<div class="button-city-activ">
+							<option selected disabled="true" class="city-activ-name">Город и область</option>
+							<option value="0" class="Ekb">Екатеринбург</option>
+							<option value="1" class="Obl">Свердловская область</option>
+						</div>
+				</select>
 
 				<select id="selector" class="button-ready" onkeyup="this.onchange();"  onchange="selectChanged(this);">
 						<option selected disabled="true" class="ready-activ-name">Готовые маршруты</option>
