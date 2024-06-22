@@ -26,6 +26,7 @@
 /* Подключение шрифтов конец */
 
 body{
+    width : 100%;
   margin: 0;
   font-family: 'Montserrat';
   font-size: 30px;
@@ -117,12 +118,10 @@ body{
 .widget {
   display: flex;
   justify-content: center;
-  width: 84%;
+  align-items: center;
   border: 5px solid #FFFFFF;
   border-radius: 10px;
   background: #A2A2A2;
-  margin-top: 220px;
-  margin-left: 8%;
   height: 700px;
   margin-bottom: 200px;
 }
@@ -202,7 +201,7 @@ body{
 @media (max-width: 670px){
   .footer_inner{
     grid-gap: 5px;
-    width: 90%;
+    width: 100%;
   }
 
   .footer_text{
@@ -218,7 +217,7 @@ body{
 @media (max-width: 550px){
   .footer_inner{
     grid-gap: 0px;
-    width: 85%;
+    width: 100%;
   }
 
   .footer_text{
