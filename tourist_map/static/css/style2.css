@@ -26,7 +26,6 @@
 /* Подключение шрифтов конец */
 
 body{
-    width : 100%;
   margin: 0;
   font-family: 'Montserrat';
   font-size: 30px;
@@ -37,7 +36,6 @@ body{
   display: flex;
   justify-content:center;
   flex-direction: column;
-  width: 100%;
   margin: 0 auto;
 }
 
@@ -56,7 +54,6 @@ body{
 
 .header{
   position: absolute;
-  width: 100%;
   top: 0;
   left: 0;
   z-index: 1000;
@@ -123,7 +120,6 @@ body{
   border-radius: 10px;
   background: #A2A2A2;
   height: 700px;
-  margin-bottom: 200px;
 }
 
 .scrollable-description {
